@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block body %}
+	<div class='container' style='text-align: center;'>
+		<h1>Cadastro finalizado</h1>
+		<p>Ótimo, {{name}}. O usuário {{username}} foi criado com sucesso!</p>
+		<p>Clique no botão abaixo para ir para a página de login</p>
+		<a class='btn btn-info btn-lg' href='{% url 'login' %}'>Ir para Login</a>
+		<hr />
+	</div>
+{% endblock %}

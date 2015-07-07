@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block body %}
+	<div class="container">
+        <h1>Upload Files</h1>
+    	
+        <ul>
+        {% for file in files %}
+            <li><a href="{{ file.docfile.url }}">{{ file.name }}</a></li>
+                
+            {% empty %}
+            <p>No documents.</p>
+                    
+        {% endfor %}
+        </ul>
+            
+        <!-- Upload form. Note enctype attribute! -->
+        <form action="{% url 'upload' %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <p><input type="submit" value="Upload" /></p>
+        </form>
+	</div>
+{% endblock %}

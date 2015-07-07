@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block body %}
+	<div class='container'>
+		<form class="form-signin" role="form" action="{% url 'cadastrar' %}" method="post">
+
+		    {% csrf_token %}
+
+		    <h1 class="form-signin-heading">Crie seu usuário</h1>
+			<div class='col-lg-4'>
+				<input type='text' id='id_pnome' name='first_name' class='form-control'
+					placeholder='Primeiro nome' required autofocus>
+
+				<input type='text' id='id_unome' name='last_name' class='form-control'
+					placeholder='Último nome' required>
+							
+				<input type='text' id='id-username' name='username' class='form-control'
+					placeholder='Nome de usuário' required>
+
+				<input type="text" id="id_email" name="email" class="form-control" 		
+					placeholder="Email" required>
+				    
+			 	<input type="password" id="id_senha" name="password" class="form-control" 
+				   	placeholder="Senha" required>
+				    
+			    <hr />
+				    
+			    <button class="btn btn-lg btn-info btn-block" type="submit" value="Login">
+			   	    Registrar
+			    </button> 
+
+			    {% if form.errors %}
+					<div class="alert alert-danger">
+						<button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+						    &times;
+						</button>
+						{{form.non_field_errors}}
+					</div>
+				{% endif %}
+				<hr/>'
+			</div>
+		</form>
+	</div>
+
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block body %}
+	<div class='container'>
+		<div class='col-lg-4'>
+			{% if user.is_authenticated %}
+				<h1>Usuário já logado</h1>
+				<p>{{user.get_full_name}} já está logado(a).</p>
+				<p>Tente novamente após o logout.</p>
+				<hr />
+			{% else %}
+				<form class='form-signin' role="form" 
+	        		action="{% url 'login' %}" method="post">
+					
+					{% csrf_token %}
+
+					<h1 class='form-signin-heading'>Login</h1>
+					
+					<input type='text' name='username' class='form-control' placeholder='e-mail ou nome de usuário' required autofocus>
+					<input type='password' name='password' class='form-control' placeholder='senha' required>
+					<input type='text' name='next_url' style="display:none;" value={{next_url}}>
+					<hr />
+					<button class="btn btn-lg btn-info btn-block" type="submit" value="Login">
+		            	Login
+		        	</button>
+		        	<hr />
+					{% if error_list %}
+			            <div class="alert alert-danger">
+			                <p>Por favor, verifique os dados informados</p>
+			            </div>
+	        	 	{% endif %}
+				</form>
+			{% endif %}
+		</div>
+		<div class='col-lg-2'></div>
+		<div class='col-lg-4'>
+			<h1>Novo usuário?</h1>
+			<a class='btn btn-info' href='{% url 'cadastrar' %}'>Cadastre-se</a>
+		</div>
+	</div>
+
+
+{% endblock %}
