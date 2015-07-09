@@ -3,7 +3,7 @@ from django.views.generic.base import View
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 from usuarios.forms import CadastrarUsuarioForm
-from perfis.models import Perfil
+from perfis.models import Perfil, Professor
 from perfis.views import get_perfil_logado
 from django.http import HttpResponseRedirect
 from django.views.decorators.cache import cache_control
@@ -27,8 +27,22 @@ class CadastrarUsuarioView(View):
 			new_user.last_name = form.data['last_name']
 			new_user.save()
 
-			perfil = Perfil(user=new_user)
-			perfil.save()
+			perfil = None
+
+			if 'user_type' in request.POST:
+				if request.POST['user_type'] == 'professor':
+					professor = Professor(name=new_user.get_full_name(), reg=request.POST['reg'], user=new_user)
+					perfil = professor
+					professor.save()
+					print('Superuser cadastrou um professor. Username: ' + new_user.username)
+				else:
+					perfil = Perfil(user=new_user)
+					perfil.save()
+					print('Superuser cadastrou um perfil. Username: ' + new_user.username)
+			else:
+				perfil = Perfil(user=new_user)
+				perfil.save()
+				print('Cadastro ordinário. Username: ' + new_user.username)
 
 			return redirect('cadastro_sucedido', name=perfil.first_name, username=perfil.username)
 
@@ -42,7 +56,7 @@ class LoginView(View):
 	def auth(self, name, password):
 		if '@' in name:
 			try:
-				user = User.objects.get(email=nome)
+				user = User.objects.get(email=name)
 				return authenticate(username=user.username, password=password)
 
 			except User.DoesNotExist:
@@ -70,8 +84,7 @@ class LoginView(View):
 		
 		if user is not None:
 			login(request, user)
-			perfil = get_perfil_logado(request)
-			print('Login no perfil de username ' + perfil.username)
+			print('Login - username: ' + request.user.username)
 			
 			return redirect(request.POST['next_url'])
 			

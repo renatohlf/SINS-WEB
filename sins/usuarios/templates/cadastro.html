@@ -22,7 +22,16 @@
 				    
 			 	<input type="password" id="id_senha" name="password" class="form-control" 
 				   	placeholder="Senha" required>
-				    
+				
+				{% if user.is_superuser %}    
+				    <hr />
+					<input type='number' name='reg' class='form-control' placeholder='reg' required>
+					<br>
+					<input type='radio' name='user_type' value='professor' checked>Professor</input>
+					<br>
+					<input type='radio' name='user_type' value='perfil'>Estudante</input>
+				{% endif %}
+
 			    <hr />
 				    
 			    <button class="btn btn-lg btn-info btn-block" type="submit" value="Login">

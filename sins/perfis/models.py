@@ -6,6 +6,24 @@ from django.contrib.auth.models import User
 class Professor(models.Model):
 	name = models.CharField(max_length=50, null=False)
 	reg = models.IntegerField(null=False)
+	user = models.OneToOneField(User, null=False, default=None)
+
+	@property 
+	def first_name(self):
+		return self.user.first_name
+
+	@property
+	def last_name(self):
+		return self.user.last_name
+
+	@property 
+	def username(self):
+		return self.user.username
+
+	@property 
+	def email(self):
+		return self.user.email
+
 	def __str__(self):
 		return self.name
 

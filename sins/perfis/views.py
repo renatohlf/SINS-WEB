@@ -11,6 +11,7 @@ from django.views import generic
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
+
 from usuarios.forms import FilesForm
 from .models import Files, Professor, Perfil, Painel
 
@@ -22,6 +23,7 @@ class FilesView(generic.ListView):
 	queryset = Files.objects.all()
 	paginate_by=5 
 	
+	 
 	def get_queryset(self):
 		return Files.objects.order_by('-pub_date')
 
