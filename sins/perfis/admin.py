@@ -6,13 +6,13 @@ from .models import Professor, Files,Painel
 
 class FilesAdmin(admin.ModelAdmin):
 	list_display = ('name','desc','prof','docfile','pub_date')
-	fields = ['user','prof','name','desc','docfile']
+	fields = ['prof','name','desc','docfile']
 admin.site.register(Files,FilesAdmin)
 
 
 class ProfessorAdmin(admin.ModelAdmin):
-	list_display = ('name','reg')
-	fields = ['name','reg']
+	list_display = ('user','name','reg')
+	fields = ['user','name','reg']
 admin.site.register(Professor,ProfessorAdmin)
 
 class PainelAdmin(admin.ModelAdmin):
