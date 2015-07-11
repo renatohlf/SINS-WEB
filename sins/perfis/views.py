@@ -27,15 +27,22 @@ class FilesView(generic.ListView):
 	def get_queryset(self):
 		return Files.objects.order_by('-pub_date')
 
-
-class IndexView(generic.ListView):
+#Página de informações
+class InfoView(generic.ListView):
+	#Carrega a table do Painel
 	model = Painel
-	template_name = 'index.html'
+	#nome da página
+	template_name = 'info.html'
+	#carrega os objetos em uma lista, para ser consumida na página
 	context_object_name = 'painel_list'
-
+	
 	def get_queryset(self):
+		#retorna a lista por ordem de título. obs:title é um campo da tabela Painel
 		return Painel.objects.order_by('-title')
-
+		
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+def index(request):
+	return render(request, 'index.html')
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @login_required
@@ -57,23 +64,20 @@ class FilesUploadView(generic.FormView):
 	form_class = FilesForm
 
 	def form_valid(self, form):
-		#import pdb; pdb.set_trace()
+		import pdb; pdb.set_trace()
 		docfile = Files(
 			prof= Professor.objects.get(id=self.get_form_kwargs().get('data')['profs']),
 			name= self.get_form_kwargs().get('data')['name'],
-			desc= self.get_form_kwargs().get('data')['desc'], 
+			desc= self.get_form_kwargs().get('data')['desc'],
+			cadeira = self.get_form_kwargs().get('data')['cadeira'], 
 			docfile=self.get_form_kwargs().get('files')['docfile'])
 		docfile.save()
 		self.id = docfile.id
+		print('Fail!')
 		
 	def post(self, request):
+		print('Sucesso!')
 		return redirect("files")
 		
 	
-
-class FilesIndexView(generic.ListView):
-	model = Files
-	template_name ='sucess.html'
-	context_object_name = 'docfile'
-	queryset = Files.objects.all()
 	

@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% load static %}
+{% block body %}
+
+<section id="featured">
+	<!-- start slider -->
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-12">
+			<!-- Slider -->
+		        <div id="main-slider" class="flexslider">
+		            <ul class="slides">
+					{% for object in painel_list %}
+							
+							
+		              <li>
+		                <img src="{% static 'perfis/images/slides/1.jpg' %}" alt="" />
+		                <div class="flex-caption">
+		                    <h3>{{ object.title }}</h3> 
+							<p>{{ object.desc }}</p> 
+							<a href="#" class="btn btn-theme">Learn More</a>
+		                </div>
+		              </li>
+					  
+					  {% empty %}
+					  	<h1> Sem eventos. </h1>
+					  {% endfor %}
+		            </ul>
+		        </div>
+			<!-- end slider -->
+			</div>
+		</div>
+	</div>	
+	
+</section>
+
+{% endblock body %}

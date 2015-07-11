@@ -43,4 +43,5 @@ class FilesForm(forms.Form):
 	profs = forms.ModelChoiceField(Professor.objects.all(),label='Professor')
 	name = forms.CharField(max_length=50,label='Nome do arquivo')
 	desc = forms.CharField(max_length=100,label='Descrição')
+	cadeira = forms.CharField(max_length=50,label='Cadeira')
 	docfile = forms.FileField(label='Selecione um arquivo.',help_text='max. 42 megabytes')

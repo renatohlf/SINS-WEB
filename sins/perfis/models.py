@@ -57,8 +57,9 @@ class Files(models.Model):
 	#nome do professor responsavel pelo arquivo. ou arquivo nomeado com nome deste professor
 	user = models.ForeignKey(Perfil,blank=True,default=1)
 	prof = models.ForeignKey(Professor, blank=True)
-	name = models.CharField(max_length=50,blank=True)
+	name = models.CharField(max_length=50)
 	desc = models.CharField(max_length=100,blank=True)
+	cadeira = models.CharField(max_length=50)
 	docfile = models.FileField(upload_to='files/')
 	pub_date = models.DateTimeField('date published',auto_now_add=True,blank=True)
 	
@@ -68,7 +69,7 @@ class Files(models.Model):
 class Painel(models.Model):
 	title = models.CharField(max_length=50, verbose_name='Título')
 	desc = models.CharField(max_length=50)
-	image = models.ImageField() #MODIFICAR O NEDIA_ROOT E MEDIA_URL AS IMAGENS ESTÃO SALVANDO EM LUGARES INADEQUADOS
+	image = models.ImageField()
 	
 	def __str__(self):
 		return self.title

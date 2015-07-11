@@ -1,7 +1,12 @@
 {% extends "base.html" %}
-
+{% load static %}
 {% block body %}
-	<div class='container'>
+<section class="callaction">
+	<div class="container">
+		
+						
+		<!----- 	inicio do conteiner azul------->			
+	
 		<form class="form-signin" role="form" action="{% url 'cadastrar' %}" method="post">
 
 		    {% csrf_token %}
@@ -49,6 +54,11 @@
 				<hr/>'
 			</div>
 		</form>
-	</div>
+	
 
+<!----- 	fim do conteiner azul------->
+					
+		</div>
+	</div>
+</section>
 {% endblock %}

@@ -56,7 +56,7 @@
 				<section>
 					<div  class="box">
 						<div class="box-gray">
-							<h3><a href="{% url 'files' %}"> {{ object.name }} </a></h3>
+							<h3><a href="{{ object.docfile.url }}"> {{ object.name }} </a></h3>
 							<p>{{ object.desc }} </p>
 							
 						</div>
@@ -66,10 +66,9 @@
 								<li><i><a href="#">Professor: {{ object.prof.name }}</a></li>
 								<li><i class="icon-calendar"></i><a href="#"> {{ object.pub_date }}</a></li>
 								<li><i class="icon-user"></i><a href="#"> {{ object.user.user }} </a></li>
-								<li><i class="icon-folder-open"></i><a href="#"> Materia</a></li>
+								<li><i class="icon-folder-open"></i><a href="#"> {{ object.cadeira }}</a></li>
 								<li><i class="icon-comments"></i><a href="#">4 Comments</a></li>
 							</ul>
-							<a href="#" class="pull-right">Continue reading <i class="icon-angle-right"></i></a>
 						</div>
 				</section>
 					{% empty %}
