@@ -54,7 +54,9 @@
 							 {% endcomment %}
                        		<li><a href="{% url 'logout' %}">Logout</a></li>
                        	{% else %}
+						   	<li style="padding: 47px 0 10px;font-size:10px">Já possui cadastro?</li>
                         	<li><a href="{% url 'login' %}">Login</a></li>
+							
                         {% endif %}
                     </ul>
                 </div>
