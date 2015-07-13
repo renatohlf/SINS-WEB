@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
-from perfis.models import Professor, Files
+from perfis.models import Professor, Files, Cadeira, Curso
+from django_enumfield import enum
 
 class CadastrarUsuarioForm(forms.Form):
 
@@ -43,5 +44,5 @@ class FilesForm(forms.Form):
 	profs = forms.ModelChoiceField(Professor.objects.all(),label='Professor')
 	name = forms.CharField(max_length=50,label='Nome do arquivo')
 	desc = forms.CharField(max_length=100,label='Descrição')
-	cadeira = forms.CharField(max_length=50,label='Cadeira')
+	cadeira = forms.TypedChoiceField(choices=Cadeira.choices(), coerce=int)
 	docfile = forms.FileField(label='Selecione um arquivo.',help_text='max. 42 megabytes')

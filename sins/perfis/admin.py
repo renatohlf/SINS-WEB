@@ -5,8 +5,8 @@ from .models import Professor, Files,Painel
 
 
 class FilesAdmin(admin.ModelAdmin):
-	list_display = ('name','desc','prof','docfile','pub_date')
-	fields = ['prof','name','desc','docfile']
+	list_display = ('name','desc','cadeira','n_comments','rating','docfile','pub_date','curso')
+	fields = ['curso','prof','cadeira','name','desc','docfile']
 admin.site.register(Files,FilesAdmin)
 
 

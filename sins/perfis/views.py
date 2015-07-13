@@ -11,9 +11,9 @@ from django.views import generic
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
-
+from django_enumfield import enum
 from usuarios.forms import FilesForm
-from .models import Files, Professor, Perfil, Painel
+from .models import Files, Professor, Perfil, Painel, Cadeira
 
 
 class FilesView(generic.ListView):
@@ -62,21 +62,22 @@ def get_perfil_logado(request):
 class FilesUploadView(generic.FormView):
 	template_name = 'upload.html'
 	form_class = FilesForm
-
+	
 	def form_valid(self, form):
-		import pdb; pdb.set_trace()
+		
+		#import pdb; pdb.set_trace()
 		docfile = Files(
 			prof= Professor.objects.get(id=self.get_form_kwargs().get('data')['profs']),
 			name= self.get_form_kwargs().get('data')['name'],
 			desc= self.get_form_kwargs().get('data')['desc'],
-			cadeira = self.get_form_kwargs().get('data')['cadeira'], 
+			cadeira =self.get_form_kwargs().get('data')['cadeira'], 
 			docfile=self.get_form_kwargs().get('files')['docfile'])
 		docfile.save()
 		self.id = docfile.id
-		print('Fail!')
+		
 		
 	def post(self, request):
-		print('Sucesso!')
+		super().post(request)
 		return redirect("files")
 		
 	

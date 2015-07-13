@@ -1,7 +1,48 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django_enumfield import enum
 # Create your models here.
 
+
+class Curso(enum.Enum):
+	NONE = 0
+	ECOMP = 1
+	CIV = 2
+	TELECOM = 3
+	ELETRI = 4
+	ELETRO = 5
+	MECAN = 6
+	MECAT = 7
+	
+	labels = {
+		NONE: 'vazio',
+		ECOMP: 'ECOMP',
+		CIV: 'Civil',
+		TELECOM: 'Telecomunicações',
+		#...
+	}
+	
+class Cadeira(enum.Enum):
+	NONE = 0
+	CALC1  = 1
+	CALC2 = 2
+	CALC3 = 3
+	CALC4 = 4 
+	CALC_NUM = 5
+	ALGEBR_L = 6
+	GEO_ANAL = 7
+	LPI = 9
+	LPO = 10
+	ED = 11
+	#...
+	labels = {
+        NONE: 'vazio',
+        CALC1: 'Calculo 1',
+		CALC2: 'Calculo 2',
+		CALC3: 'Calculo 3',
+		#...
+    }
+	
 
 class Professor(models.Model):
 	name = models.CharField(max_length=50, null=False)
@@ -56,15 +97,29 @@ class Perfil(models.Model):
 class Files(models.Model):
 	#nome do professor responsavel pelo arquivo. ou arquivo nomeado com nome deste professor
 	user = models.ForeignKey(Perfil,blank=True,default=1)
-	prof = models.ForeignKey(Professor, blank=True)
+	#nome do professor no qual o arquivo pertence
+	prof = models.ForeignKey(Professor)
+	#nome do arquivo
 	name = models.CharField(max_length=50)
+	#descrição do arquivo
 	desc = models.CharField(max_length=100,blank=True)
-	cadeira = models.CharField(max_length=50)
+	#cadeira a ser publicada
+	cadeira = enum.EnumField(Cadeira, default=Cadeira.NONE)
+	#numero de comentarios
+	n_comments = models.IntegerField(default=0)
+	#votos
+	rating = models.IntegerField(default=0)
+	#arquivo a ser salvo
 	docfile = models.FileField(upload_to='files/')
+	#data de publicação
 	pub_date = models.DateTimeField('date published',auto_now_add=True,blank=True)
+	#curso a ser destinado o arquivo
+	curso = enum.EnumField(Curso, default=Curso.NONE)
 	
+	#retorna o nome do arquivo
 	def __str__(self):
 		return self.name
+		
 
 class Painel(models.Model):
 	title = models.CharField(max_length=50, verbose_name='Título')
