@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Professor, Files,Painel
+from .models import Professor, Files,Painel,Perfil
 
 # Register your models here.
 
@@ -20,3 +20,6 @@ class PainelAdmin(admin.ModelAdmin):
 	fields = ['title', 'desc', 'image']
 	
 admin.site.register(Painel,PainelAdmin)
+
+
+

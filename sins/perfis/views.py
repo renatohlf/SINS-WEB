@@ -80,5 +80,21 @@ class FilesUploadView(generic.FormView):
 		super().post(request)
 		return redirect("files")
 		
+
+#Vote method, método para votação, testando..
+#a implementação provalvelmente precisará do uso de ajax, ou javascript.
+def vote(request, files_id):
+	p = get_object_or_404(Files, pk=files_id)
+	selected_choice = p.choice_set.get(pk=request.POST['choice'])
 	
-	
+	def like():
+		selected_choice.votes += 1
+		selected_choice.save()
+		
+	def unlike():
+		selected_choice.votes -= 1
+		selected_choice.save()
+		
+	options = { 0 : like, 1 : unlike, }
+	#options[0]() defina qual o numero no colchetes, e será a escolha do voto.
+		   

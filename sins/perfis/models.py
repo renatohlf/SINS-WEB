@@ -70,7 +70,8 @@ class Professor(models.Model):
 
 class Perfil(models.Model):
 	user = models.OneToOneField(User)
-
+	#curso = enum.EnumField(Curso, default=Curso.NONE)
+	
 	@property 
 	def full_name(self):
 		return self.user.get_full_name()
