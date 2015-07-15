@@ -79,7 +79,11 @@ class FilesUploadView(generic.FormView):
 	def post(self, request):
 		super().post(request)
 		return redirect("files")
-		
+	
+
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+def donate(request):
+	return render(request, 'donate.html')
 
 #Vote method, método para votação, testando..
 #a implementação provalvelmente precisará do uso de ajax, ou javascript.
