@@ -30,25 +30,37 @@
 					<div class="btn-group"> 
 						<a class="btn btn-theme" href="{% url 'upload' %}">Enviar Material</a>
 					</div>
+					
+					
 				</aside>
 			</div>
 	<!-- Paginator-->
 		 {% if is_paginated %}
 		 <div class="col-lg-8">
 			<div class="pagination">
-		    	<span class="all">
-		        	{% if page_obj.has_previous %}
-		            	<a href="?page={{ page_obj.previous_page_number }}">previous</a>
-		        	{% endif %}
-		
-		        	<span class="current">
-		            	Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
-		        	</span>
-		
-		        	{% if page_obj.has_next %}
-		            	<a href="?page={{ page_obj.next_page_number }}">next</a>
-		        	{% endif %}
-		    	</span>
+				 <ul class="pagination"> 
+					 {% if page_obj.has_previous %}
+					 <li>
+						 <a href="?page={{ page_obj.previous_page_number }}">«</a>
+					</li> 
+					{% endif %}
+				
+					
+					{% for i in paginator.page_range %}
+					{% ifequal i page_obj.number  %}
+					<li class="active" >
+					{% else %}
+					<li>
+					{% endifequal %}
+						<a href="?page={{ i }}">{{ i }}</a>
+					</li> 
+					{% endfor %}
+					{% if page_obj.has_next %}
+					<li>
+						<a href="?page={{ page_obj.next_page_number }}">»</a>
+					</li> 
+					{% endif %}
+				</ul> 
 			</div>
 		 </div>
 		{% endif %}
