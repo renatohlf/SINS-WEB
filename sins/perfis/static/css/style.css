@@ -200,9 +200,10 @@ header .nav .caret {
 	
 
 .dropdown-menu  {
-    box-shadow: none;
+   box-shadow: 1px 2px 6px rgba(0, 0, 0, 0.5);
     border-radius: 0;
 	border: none;
+	z-index: 100;
 }
 
 .dropdown-menu li:last-child  {
@@ -1625,6 +1626,11 @@ section.demogrid .col-lg-12.nest {
 17. Divider, Line & Misc
 ================================ */
 
+.divider{
+	border-bottom: 1px solid #e2e2e2;
+ 	border-top: 1px solid #e2e2e2;
+}
+
 .solidline {
 	border-top:1px solid #f5f5f5;
 	margin:0 0 30px;
@@ -1977,3 +1983,20 @@ article img.pull-right, article .align-right{
 @media (max-width: 360px) {
 
 }
+
+/* =============================
+22. Popup image
+============================= */
+.img_popup{
+	border-radius: 50%;
+	display: block;
+	margin-left: 40px;
+	height: 32px;
+	width: 32px;
+}
+.shadow {
+	box-shadow: 1px 2px 6px rgba(0, 0, 0, 0.5);
+	-moz-box-shadow: 1px 2px 6px rgba(0, 0, 0, 0.5);
+	-webkit-box-shadow: 1px 2px 6px rgba(0, 0, 0, 0.5);
+}
+
