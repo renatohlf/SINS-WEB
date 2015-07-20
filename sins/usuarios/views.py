@@ -17,7 +17,8 @@ class CadastrarUsuarioView(View):
 	#O get apenas mostra a página a partir de uma requisição
 	@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 	def get(self, request):
-		return render(request, self.template_name)
+		form = CadastrarUsuarioForm
+		return render(request, self.template_name, {'form': form })
 		
 	#O post vai verificar os dados e cadastrar caso sejam dados válidos
 	@cache_control(no_cache=True, must_revalidate=True, no_store=True)
@@ -60,7 +61,8 @@ class CadastrarUsuarioView(View):
 			return redirect('cadastro_sucedido', name=perfil.first_name, username=perfil.username)
 			
 		#Gera novamente a página de cadastro passando o form contendo os erros
-		return render(request, self.template_name, {'form': form})
+		return render(request, self.template_name, {'form': form })
+		
 
 
 #View responsável pelo login
@@ -93,7 +95,7 @@ class LoginView(View):
 			next_url = request.GET['next']
 		else:
 			next_url = 'exibir_perfil'
-			
+		#import pdb; pdb.set_trace();
 		return render(request, self.template_name, {'next_url':next_url})
 
 	#Obtém os dados da página e tenta fazer o login
@@ -103,18 +105,23 @@ class LoginView(View):
 		password = request.POST['password']
 		
 		user = self.auth(name, password)
-		
+
 		#Se existe o usuário com os dados, faz o login. Loga no console. Redireciona para a página devida
 		if user is not None:
 			login(request, user)
 			print('Login - username: ' + request.user.username)
 			
-			return redirect(request.POST['next_url'])
-		
+			next_url = request.POST['next_url']
+			
+			if not next_url: 
+				next_url= 'exibir_perfil' 
+			return redirect(next_url)
+				
 		#Mostra os erros do login renderizando a página de login novamente
 		else:
 			error_list = True
 			print('Login falhou')
+			
 			return render(request, self.template_name, {'error_list':error_list})
 
 
