@@ -43,11 +43,17 @@
 				<li class=""><a href="#three" data-toggle="tab">Comments</a></li>
 				
 				{% if user.username == requested_user.username %}
-				<div style="float: right;">
-	            	<a href="javascript:void(0)" onclick = "document.getElementById('edit-light').style.display='block';document.getElementById('fade').style.display='block'" class="btn btn-theme">
-	                	 Edit profile
-	                </a>
-	         	</div>
+					<div style="float: right;">
+		            	<a href="javascript:void(0)" onclick = "document.getElementById('edit-light').style.display='block';document.getElementById('fade').style.display='block'" class="btn btn-theme">
+		                	 Edit profile
+		                </a>
+		         	</div>
+				{% elif is_prof == True and logged_is_prof == False %}
+					<div style="float: right;">
+		            	<a href="" class="btn btn-theme">
+		              		Seguir
+		                </a>
+		         	</div>
 				{% endif %}
 			</ul>
 			

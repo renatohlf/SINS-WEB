@@ -72,20 +72,28 @@ def index(request):
 	
 class ExibirPerfilView(generic.View):
 	
+	def default_return(self, request, requested_user):
+		is_it_prof = is_prof(request, requested_user)
+		logged_is_prof = is_prof(request, request.user)
+		perfil = None
+			
+		if is_it_prof:
+			perfil = Professor.objects.get(user=requested_user)
+		else:
+			try:
+				perfil = Perfil.objects.get(user=requested_user)
+			except Perfil.DoesNotExist:
+				pass
+								
+		return render(request, 'perfil.html', {'requested_user' : requested_user, 'is_prof' : is_it_prof, 'logged_is_prof' : logged_is_prof, 'perfil':perfil, 'perfil_logado': get_perfil_logado(request)})
+		
+	
 	@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 	def get(self, request, username):
 		if request.user is not None and not isinstance(request.user, AnonymousUser):
-			
 			requested_user = User.objects.get(username=username)
-			is_it_prof = is_prof(request, requested_user)
-			perfil = None
 			
-			if is_it_prof:
-				perfil = Professor.objects.get(user=requested_user)
-			else:
-				perfil = Perfil.objects.get(user=requested_user)			
-			
-			return render(request, 'perfil.html', {'requested_user' : requested_user, 'is_prof' : is_it_prof, 'perfil':perfil})
+			return self.default_return(request, requested_user)
 		else:
 			return redirect('login')
 	
@@ -102,7 +110,7 @@ class ExibirPerfilView(generic.View):
 		perfil.image = img
 		perfil.save()
 			
-		return render(request, 'perfil.html', {'requested_user' : requested_user, 'is_prof' : is_prof(request, requested_user)})
+		return self.default_return(request, requested_user)
 		
 	def post_edition(self, request, requested_user):
 		first_name = request.POST['first_name']
@@ -115,7 +123,8 @@ class ExibirPerfilView(generic.View):
 			user.first_name = first_name
 			user.last_name = last_name
 			user.save()
-		return render(request, 'perfil.html', {'requested_user' : requested_user, 'is_prof' : is_prof(request, requested_user)})
+		
+		return self.default_return(request, requested_user)
 	
 	def post(self, request, username):
 		requested_user = User.objects.get(username=username)
@@ -125,12 +134,12 @@ class ExibirPerfilView(generic.View):
 		elif request.POST['post_type'] == 'edit':
 			return self.post_edition(request, requested_user)
 		else:
-			return render(request, 'perfil.html', {'requested_user' : requested_user, 'is_prof' : is_prof(request, requested_user)})
+			return self.default_return(request, requested_user)
 		
 
 def is_prof(request, user):
 	try:
-		possible_prof = Professor.objects.get(user=user)
+		possible_prof = Professor.objects.get(user_id=user.id)
 		return True
 	except Professor.DoesNotExist:
 		return False
@@ -140,7 +149,11 @@ def get_perfil_logado(request):
 	#import pdb; pdb.set_trace();
 	if user.is_authenticated():
 		try:
-			perfil = Perfil.objects.get(user=user)
+			perfil = None
+			if is_prof(request, user):
+				perfil = Professor.objects.get(user=user)
+			else:
+				perfil = Perfil.objects.get(user=user)
 			print('%s', perfil.user.get_full_name)
 		except:	
 			print('Perfil não encontrado')
