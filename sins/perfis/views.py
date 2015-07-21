@@ -70,13 +70,39 @@ class InfoView(BaseMixin,generic.ListView):
 def index(request):
 	return render(request, 'index.html')
 
-@cache_control(no_cache=True, must_revalidate=True, no_store=True)
-@login_required
-def exibir_perfil(request):
-	perfil = get_perfil_logado(request)
-	return render(request, 'perfil.html', { 'perfil': perfil })
+
+#@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+#@login_required
+#def exibir_perfil(request, username):
+	#requested_user = User.objects.get(username=username)
+	#perfil = get_perfil_logado(request)
+	#return render(request, 'perfil.html', {'requested_user' : requested_user, 'is_prof' : is_prof(request, requested_user), 'perfil': perfil })
+
+class ExibirPerfilView(BaseMixin ,generic.View):
+	
+	def get(self, request, username):
+		requested_user = User.objects.get(username=username)
+		return render(request, 'perfil.html', {'requested_user' : requested_user, 'is_prof' : is_prof(request, requested_user)})
+	
+	def post(self, request, username):
+		requested_user = User.objects.get(username=username)
+
+		img = request.FILES.get('new_avatar', None)
+		user = request.user
+		
+		perfil = Perfil.objects.get(user=user)
+		perfil.image = img
+		perfil.save()
+		return render(request, 'perfil.html', {'requested_user' : requested_user, 'is_prof' : is_prof(request, requested_user)})
+		
 
 
+def is_prof(request, user):
+	try:
+		possible_prof = Professor.objects.get(user=user)
+		return True
+	except Professor.DoesNotExist:
+		return False
 	
 class FilesUploadView(BaseMixin, generic.FormView):
 	template_name = 'upload.html'
