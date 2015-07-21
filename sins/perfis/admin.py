@@ -21,5 +21,10 @@ class PainelAdmin(admin.ModelAdmin):
 	
 admin.site.register(Painel,PainelAdmin)
 
+class PerfilAdmin(admin.ModelAdmin):
+	list_display = ('user','curso','image')
+	fields = ['user', 'curso','image']
+admin.site.register(Perfil,PerfilAdmin)
+
 
 

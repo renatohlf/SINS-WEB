@@ -47,13 +47,18 @@ def index(request):
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @login_required
 def exibir_perfil(request):
-	return render(request, 'perfil.html')
+	perfil = get_perfil_logado(request)
+	return render(request, 'perfil.html', { 'perfil': perfil })
 
 def get_perfil_logado(request):
 	user = User.objects.get(username=request.user.username, email=request.user.email)
+	#import pdb; pdb.set_trace();
 	if user.is_authenticated():
-		perfil = Perfil.objects.get(user=user)
-		print('%s', perfil.full_name)
+		try:
+			perfil = Perfil.objects.get(user=user)
+			print('%s', perfil.user.get_full_name)
+		except:	
+			print('Perfil não encontrado')
 		return perfil
 	else:
 		return None

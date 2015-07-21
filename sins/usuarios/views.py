@@ -7,6 +7,7 @@ from perfis.models import Perfil, Professor
 from perfis.views import get_perfil_logado
 from django.http import HttpResponseRedirect
 from django.views.decorators.cache import cache_control
+from django.templatetags.static import static
 
 #View para cadastro
 class CadastrarUsuarioView(View):
@@ -25,7 +26,7 @@ class CadastrarUsuarioView(View):
 	def post(self, request):
 		#Passa os dados para o form e verifica a validade dos dados pelo método is_valid()
 		form = CadastrarUsuarioForm(request.POST)
-		
+		import pdb; pdb.set_trace();
 		if form.is_valid():
 			
 			#Cria um novo usuário com os dados obtidos e persiste
@@ -33,7 +34,12 @@ class CadastrarUsuarioView(View):
 			new_user.first_name = form.data['first_name']
 			new_user.last_name = form.data['last_name']
 			new_user.save()
-
+			#seta o campo curso escolhido pelo usuario no form
+			course = form.data['course']
+			#pega a imagem que o usuário escolheu no form
+			img = request.FILES.get('image',None)
+			
+			
 			#Cria a variavel perfil para uso posterior
 			perfil = None
 
@@ -48,12 +54,12 @@ class CadastrarUsuarioView(View):
 					print('Superuser cadastrou um professor. Username: ' + new_user.username)
 				#Caso não seja um professor, é um perfil comum. Loga no console
 				else:
-					perfil = Perfil(user=new_user)
+					perfil = Perfil(user=new_user, curso=course, image=img)
 					perfil.save()
 					print('Superuser cadastrou um perfil. Username: ' + new_user.username)
 			#Esse else representa um cadastro comum, ou seja, um perfil. Loga no console
 			else:
-				perfil = Perfil(user=new_user)
+				perfil = Perfil(user=new_user, curso=course, image=img)
 				perfil.save()
 				print('Cadastro ordinário. Username: ' + new_user.username)
 				

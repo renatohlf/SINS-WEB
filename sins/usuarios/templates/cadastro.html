@@ -7,10 +7,8 @@
 						
 		<!----- 	inicio do conteiner azul------->			
 	
-		<form class="form-signin" role="form" action="{% url 'cadastrar' %}" method="post">
-
+		<form class="form-signin" action="{% url 'cadastrar' %}" method="post" enctype="multipart/form-data">
 		    {% csrf_token %}
-		
 		    <h1 class="form-signin-heading">Crie seu usuário</h1>
 			<div class='col-lg-4'>
 				 {% csrf_token %}

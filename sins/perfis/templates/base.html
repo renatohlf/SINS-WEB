@@ -51,11 +51,11 @@
                         
                        		
 						<li class="dropdown ">
-                            <a href="{% url 'exibir_perfil' %}" class="dropdown-toggle " data-toggle="dropdown" data-hover="dropdown" data-delay="0" data-close-others="false"><img class="img_popup" src="{% static 'perfis/images/avatar.png' %}"><b class=" icon-angle-down"></b></a>
+                            <a href="{% url 'exibir_perfil' %}" class="dropdown-toggle " data-toggle="dropdown" data-hover="dropdown" data-delay="0" data-close-others="false"><img class="img_popup" src="{{ perfil.image.url }}"><b class=" icon-angle-down"></b></a>
 							
                             <ul class="dropdown-menu shadow">
 								<div style="margin:20px;">
-									<img class="img_popup" src="{% static 'perfis/images/avatar.png' %}">
+									<img class="img_popup" src="{{ perfil.image.url }}">
 									<p><span>{{user.get_full_name}}<span></p>
 								</div>
 								<div class="solidline">
