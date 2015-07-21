@@ -94,7 +94,7 @@ def donate(request):
 #a implementação provalvelmente precisará do uso de ajax, ou javascript.
 def vote(request, files_id):
 	p = get_object_or_404(Files, pk=files_id)
-	selected_choice = p.choice_set.get(pk=request.POST['choice'])
+	selected_choice = p.rating_set.get(pk=request.POST['rating'])
 	
 	def like():
 		selected_choice.votes += 1
