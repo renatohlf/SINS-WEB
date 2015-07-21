@@ -16,7 +16,33 @@ from usuarios.forms import FilesForm
 from .models import Files, Professor, Perfil, Painel, Cadeira
 
 
-class FilesView(generic.ListView):
+class BaseMixin(object):
+	def get_perfil(self):
+		perfil = get_perfil_logado(self.request)
+		return perfil
+	
+	def get_context_data(self, **kwargs):
+		ctx = super().get_context_data(**kwargs)
+		ctx['perfil'] = self.get_perfil()
+		return ctx
+	
+	
+def get_perfil_logado(request):
+	user = User.objects.get(username=request.user.username, email=request.user.email)
+	#import pdb; pdb.set_trace();
+	if user.is_authenticated():
+		try:
+			perfil = Perfil.objects.get(user=user)
+			print('%s', perfil.user.get_full_name)
+		except:	
+			print('Perfil não encontrado')
+		return perfil
+	else:
+		return None
+
+
+
+class FilesView(BaseMixin, generic.ListView):
 	model = Files
 	template_name = 'files.html'
 	context_object_name = 'file_list'
@@ -28,7 +54,7 @@ class FilesView(generic.ListView):
 		return Files.objects.order_by('-pub_date')
 
 #Página de informações
-class InfoView(generic.ListView):
+class InfoView(BaseMixin,generic.ListView):
 	#Carrega a table do Painel
 	model = Painel
 	#nome da página
@@ -50,21 +76,9 @@ def exibir_perfil(request):
 	perfil = get_perfil_logado(request)
 	return render(request, 'perfil.html', { 'perfil': perfil })
 
-def get_perfil_logado(request):
-	user = User.objects.get(username=request.user.username, email=request.user.email)
-	#import pdb; pdb.set_trace();
-	if user.is_authenticated():
-		try:
-			perfil = Perfil.objects.get(user=user)
-			print('%s', perfil.user.get_full_name)
-		except:	
-			print('Perfil não encontrado')
-		return perfil
-	else:
-		return None
 
 	
-class FilesUploadView(generic.FormView):
+class FilesUploadView(BaseMixin, generic.FormView):
 	template_name = 'upload.html'
 	form_class = FilesForm
 	
@@ -88,13 +102,14 @@ class FilesUploadView(generic.FormView):
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def donate(request):
-	return render(request, 'donate.html')
+	perfil = get_perfil_logado(request)
+	return render(request, 'donate.html', {'perfil':perfil})
 
 #Vote method, método para votação, testando..
 #a implementação provalvelmente precisará do uso de ajax, ou javascript.
 def vote(request, files_id):
 	p = get_object_or_404(Files, pk=files_id)
-	selected_choice = p.rating_set.get(pk=request.POST['rating'])
+	selected_choice = p.choice_set.get(pk=request.POST['choice'])
 	
 	def like():
 		selected_choice.votes += 1
