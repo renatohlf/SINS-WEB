@@ -46,18 +46,17 @@ def index(request):
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @login_required
-def exibir_perfil(request):
-	return render(request, 'perfil.html')
+def exibir_perfil(request, username):
+	requested_user = User.objects.get(username=username)
+	
+	return render(request, 'perfil.html', {'requested_user' : requested_user, 'is_prof' : is_prof(request, requested_user)})
 
-def get_perfil_logado(request):
-	user = User.objects.get(username=request.user.username, email=request.user.email)
-	if user.is_authenticated():
-		perfil = Perfil.objects.get(user=user)
-		print('%s', perfil.full_name)
-		return perfil
-	else:
-		return None
-
+def is_prof(request, user):
+	try:
+		possible_prof = Professor.objects.get(user=user)
+		return True
+	except Professor.DoesNotExist:
+		return False
 	
 class FilesUploadView(generic.FormView):
 	template_name = 'upload.html'

@@ -4,7 +4,6 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 from usuarios.forms import CadastrarUsuarioForm
 from perfis.models import Perfil, Professor
-from perfis.views import get_perfil_logado
 from django.http import HttpResponseRedirect
 from django.views.decorators.cache import cache_control
 
@@ -101,7 +100,7 @@ class LoginView(View):
 	#Obtém os dados da página e tenta fazer o login
 	@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 	def post(self, request):
-		name = request.POST['username']
+		name = request.POST['username'].strip()
 		password = request.POST['password']
 		
 		user = self.auth(name, password)
@@ -111,11 +110,9 @@ class LoginView(View):
 			login(request, user)
 			print('Login - username: ' + request.user.username)
 			
-			next_url = request.POST['next_url']
-			
-			if not next_url: 
-				next_url= 'exibir_perfil' 
-			return redirect(next_url)
+			next_url = 'exibir_perfil'#request.POST['next_url']
+			 
+			return redirect(next_url, username=user.username)
 				
 		#Mostra os erros do login renderizando a página de login novamente
 		else:

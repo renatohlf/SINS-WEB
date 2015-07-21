@@ -24,6 +24,14 @@ class CadastrarUsuarioForm(forms.Form):
 		if email_ja_utilizado:
 			self.adiciona_erro("E-mail já utilizado")
 			resposta = False
+			
+		if self.data['email'].startswith(' ') or self.data['email'].endswith(' '):
+			self.adiciona_erro("E-mail começa ou termina com espaços em branco")
+			resposta = False
+		
+		if self.data['username'].startswith(' ') or self.data['username'].endswith(' '):
+			self.adiciona_erro("Nome de usuário começa ou termina com espaços em branco")
+			resposta = False
 
 		username_existe = User.objects.filter(username=self.data['username']).exists()
 
