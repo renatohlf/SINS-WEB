@@ -75,6 +75,9 @@ def is_prof(request, user):
 		return True
 	except Professor.DoesNotExist:
 		return False
+		
+def logged_user(request):
+	return request.user
 	
 class FilesUploadView(generic.FormView):
 	template_name = 'upload.html'
