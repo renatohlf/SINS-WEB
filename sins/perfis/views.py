@@ -51,15 +51,23 @@ def index(request):
 #	
 #	return render(request, 'perfil.html', {'requested_user' : requested_user, 'is_prof' : is_prof(request, requested_user)})
 
-class ExibirPerfilView(views.View):
+class ExibirPerfilView(generic.View):
 	
 	def get(self, request, username):
 		requested_user = User.objects.get(username=username)
 		return render(request, 'perfil.html', {'requested_user' : requested_user, 'is_prof' : is_prof(request, requested_user)})
 	
-	def post(self, request):
-		if request.POST['new_avatar'] is not None:
-			pass
+	def post(self, request, username):
+		requested_user = User.objects.get(username=username)
+
+		img = request.FILES.get('new_avatar', None)
+		user = request.user
+		
+		perfil = Perfil.objects.get(user=user)
+		perfil.image = img
+		perfil.save()
+		return render(request, 'perfil.html', {'requested_user' : requested_user, 'is_prof' : is_prof(request, requested_user)})
+		
 
 def is_prof(request, user):
 	try:
