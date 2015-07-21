@@ -23,24 +23,8 @@ class BaseMixin(object):
 	
 	def get_context_data(self, **kwargs):
 		ctx = super().get_context_data(**kwargs)
-		ctx['perfil'] = self.get_perfil()
+		ctx['perfil_logado'] = self.get_perfil()
 		return ctx
-	
-	
-def get_perfil_logado(request):
-	user = User.objects.get(username=request.user.username, email=request.user.email)
-	#import pdb; pdb.set_trace();
-	if user.is_authenticated():
-		try:
-			perfil = Perfil.objects.get(user=user)
-			print('%s', perfil.user.get_full_name)
-		except:	
-			print('Perfil não encontrado')
-		return perfil
-	else:
-		return None
-
-
 
 class FilesView(BaseMixin, generic.ListView):
 	model = Files
@@ -190,7 +174,7 @@ class FilesUploadView(BaseMixin, generic.FormView):
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def donate(request):
 	perfil = get_perfil_logado(request)
-	return render(request, 'donate.html', {'perfil':perfil})
+	return render(request, 'donate.html', {'perfil_logado':perfil})
 
 #Vote method, método para votação, testando..
 #a implementação provalvelmente precisará do uso de ajax, ou javascript.
