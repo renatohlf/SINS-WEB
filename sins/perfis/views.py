@@ -44,13 +44,6 @@ class InfoView(generic.ListView):
 def index(request):
 	return render(request, 'index.html')
 
-#@cache_control(no_cache=True, must_revalidate=True, no_store=True)
-#@login_required
-#def exibir_perfil(request, username):
-#	requested_user = User.objects.get(username=username)
-#	
-#	return render(request, 'perfil.html', {'requested_user' : requested_user, 'is_prof' : is_prof(request, requested_user)})
-
 class ExibirPerfilView(generic.View):
 	
 	@cache_control(no_cache=True, must_revalidate=True, no_store=True)
@@ -110,9 +103,19 @@ def is_prof(request, user):
 	except Professor.DoesNotExist:
 		return False
 		
-def logged_user(request):
-	return request.user
-	
+def get_perfil_logado(request):
+	user = User.objects.get(username=request.user.username, email=request.user.email)
+	#import pdb; pdb.set_trace();
+	if user.is_authenticated():
+		try:
+			perfil = Perfil.objects.get(user=user)
+			print('%s', perfil.user.get_full_name)
+		except:	
+			print('Perfil não encontrado')
+		return perfil
+	else:
+		return None
+
 class FilesUploadView(generic.FormView):
 	template_name = 'upload.html'
 	form_class = FilesForm
