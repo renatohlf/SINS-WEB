@@ -2,6 +2,7 @@
 {% load static %}
 {% block body %}
 
+	<div class='container'>
 		<div class="container col-lg-4">
 			{% if user.username == requested_user.username %}
 		        <a href="javascript:void(0)" onclick = "document.getElementById('avatar-light').style.display='block';document.getElementById('fade').style.display='block'" aria-label="Change your avatar" class=""><img alt="" class="avatar" height="230" src="{{ perfil.image.url }}" width="230"></a>
@@ -101,5 +102,5 @@
 			</div>
 	    	<div id="fade" class="black_overlay"></div>
 		{% endif %}
-	
+	</div>
 {% endblock body %}

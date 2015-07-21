@@ -66,10 +66,16 @@ class ExibirPerfilView(generic.View):
 	def post_avatar(self, request, requested_user):
 		img = request.FILES.get('new_avatar', None)
 		user = request.user
+		perfil = None
 		
-		perfil = Perfil.objects.get(user=user)
+		if is_prof(request, user):
+			perfil = Professor.objects.get(user=user)
+		else:
+			perfil = Perfil.objects.get(user=user)
+			
 		perfil.image = img
 		perfil.save()
+			
 		return render(request, 'perfil.html', {'requested_user' : requested_user, 'is_prof' : is_prof(request, requested_user)})
 		
 	def post_edition(self, request, requested_user):
