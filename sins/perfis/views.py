@@ -110,7 +110,7 @@ class ExibirPerfilView(BaseMixin ,generic.View):
 		perfil.image = img
 		perfil.save()
 			
-		return render(request, 'perfil.html', {'requested_user' : requested_user, 'is_prof' : is_prof(request, requested_user)})
+		return render(request, 'perfil.html', {'requested_user' : requested_user, 'is_prof' : is_prof(request, requested_user), 'perfil':perfil})
 		
 
 	def post_edition(self, request, requested_user):
@@ -124,17 +124,18 @@ class ExibirPerfilView(BaseMixin ,generic.View):
 			user.first_name = first_name
 			user.last_name = last_name
 			user.save()
-		return render(request, 'perfil.html', {'requested_user' : requested_user, 'is_prof' : is_prof(request, requested_user)})
+		perfil = get_perfil_logado(request)
+		return render(request, 'perfil.html', {'requested_user' : requested_user, 'is_prof' : is_prof(request, requested_user),'perfil':perfil})
 	
 	def post(self, request, username):
 		requested_user = User.objects.get(username=username)
-		
+		perfil = get_perfil_logado(request)
 		if request.POST['post_type'] == 'avatar':
 			return self.post_avatar(request, requested_user)
 		elif request.POST['post_type'] == 'edit':
 			return self.post_edition(request, requested_user)
 		else:
-			return render(request, 'perfil.html', {'requested_user' : requested_user, 'is_prof' : is_prof(request, requested_user)})
+			return render(request, 'perfil.html', {'requested_user' : requested_user, 'is_prof' : is_prof(request, requested_user), 'perfil':perfil})
 		
 
 def is_prof(request, user):
