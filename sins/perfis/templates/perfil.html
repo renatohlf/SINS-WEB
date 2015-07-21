@@ -10,7 +10,40 @@
 	  			
 			</h1>
 			<p class="lead"><span class="vcard-username" itemprop="additionalName"> {{requested_user.username}}</span></p>
+
 	
+	<div class="container col-lg-4">
+        <a href="" aria-label="Change your avatar" class=""><img alt="" class="avatar" height="230" src="{{ perfil.image.url }}" width="230"></a>
+
+      	<h1 class="vcard-names">
+  			<span class="vcard-fullname" itemprop="name"> {{ user.get_full_name }}</span></br>
+  			
+		</h1>
+		<p class="lead"><span class="vcard-username" itemprop="additionalName"> {{ user.username }}</span> - {{ perfil.get_curso_display}}</p>
+
+
+	<ul class="unstyled divider">
+    	<li class="vcard-detail"><span class=""></span><a class="email" href="">{{ user.email }}</a></li>
+  		<li class="vcard-detail"><span class=""></span><span>Joined on </span><time class="join-date" datetime="2014-03-26T11:56:04Z" day="numeric" is="local-time" month="short" year="numeric" title="26 de mar de 2014 08:56 BRT">26 Mar 2014</time></li>
+	</ul>
+
+
+      <div class="">
+        <a href="#">
+          <strong>2</strong>
+          <span>Followers</span>
+        </a>
+        <a href="#">
+          <strong>2</strong>
+          <span>Starred</span>
+        </a>
+        <a href="#">
+          <strong>4</strong>
+          <span>Following</span>
+        </a>
+      </div>
+
+    </div>
 	
 		<ul class="unstyled divider">
 	    	<li class="vcard-detail"><span class=""></span><a class="email" href="">{{ requested_user.email }}</a></li>
@@ -78,4 +111,41 @@
 		</form>
 	</div>
     <div id="fade" class="black_overlay"></div>
+	
+	
+	<div class="col-lg-6 container">
+		
+		<ul class="nav nav-tabs">
+			<li class="active"><a href="#one" data-toggle="tab"><i class="icon-briefcase"></i> Contruibutions</a></li>
+			<li class=""><a href="#two" data-toggle="tab">Downloads</a></li>
+			<li class=""><a href="#three" data-toggle="tab">Comments</a></li>
+			<!-- div btn Editar-->
+			<div style="float: right;">
+            	<a href="#" class="btn btn-theme">
+                	 Edit profile
+                	</a>
+         	</div>
+		</ul>
+		
+	<div class="tab-content">
+		<div class="tab-pane active" id="one">
+			
+				{% lorem 2 p%}
+			
+			
+		</div>
+		<div class="tab-pane" id="two">
+			<p>
+				 {% lorem %}
+			</p>
+		</div>
+		<div class="tab-pane" id="three">
+			<p>
+				 {% lorem %}
+			</p>
+		</div>
+	</div>
+	
+	</div>
+	
 {% endblock body %}

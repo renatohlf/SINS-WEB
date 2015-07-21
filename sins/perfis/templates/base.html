@@ -56,7 +56,7 @@
 							
                             <ul class="dropdown-menu shadow">
 								<div style="margin:20px;">
-									<img class="img_popup" src="{% static 'perfis/images/avatar.png' %}">
+									<img class="img_popup" src="{{ perfil.image.url }}">
 									<p><span>{{user.get_full_name}}<span></p>
 								</div>
 								<div class="solidline">
