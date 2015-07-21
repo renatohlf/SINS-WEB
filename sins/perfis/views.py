@@ -8,7 +8,7 @@ from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import cache_control
 from django.views import generic
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, AnonymousUser
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from django_enumfield import enum
@@ -16,7 +16,33 @@ from usuarios.forms import FilesForm
 from .models import Files, Professor, Perfil, Painel, Cadeira
 
 
-class FilesView(generic.ListView):
+class BaseMixin(object):
+	def get_perfil(self):
+		perfil = get_perfil_logado(self.request)
+		return perfil
+	
+	def get_context_data(self, **kwargs):
+		ctx = super().get_context_data(**kwargs)
+		ctx['perfil'] = self.get_perfil()
+		return ctx
+	
+	
+def get_perfil_logado(request):
+	user = User.objects.get(username=request.user.username, email=request.user.email)
+	#import pdb; pdb.set_trace();
+	if user.is_authenticated():
+		try:
+			perfil = Perfil.objects.get(user=user)
+			print('%s', perfil.user.get_full_name)
+		except:	
+			print('Perfil não encontrado')
+		return perfil
+	else:
+		return None
+
+
+
+class FilesView(BaseMixin, generic.ListView):
 	model = Files
 	template_name = 'files.html'
 	context_object_name = 'file_list'
@@ -28,7 +54,7 @@ class FilesView(generic.ListView):
 		return Files.objects.order_by('-pub_date')
 
 #Página de informações
-class InfoView(generic.ListView):
+class InfoView(BaseMixin,generic.ListView):
 	#Carrega a table do Painel
 	model = Painel
 	#nome da página
@@ -43,30 +69,63 @@ class InfoView(generic.ListView):
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def index(request):
 	return render(request, 'index.html')
-
-#@cache_control(no_cache=True, must_revalidate=True, no_store=True)
-#@login_required
-#def exibir_perfil(request, username):
-#	requested_user = User.objects.get(username=username)
-#	
-#	return render(request, 'perfil.html', {'requested_user' : requested_user, 'is_prof' : is_prof(request, requested_user)})
-
+	
 class ExibirPerfilView(generic.View):
 	
+	@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 	def get(self, request, username):
-		requested_user = User.objects.get(username=username)
+		if request.user is not None and not isinstance(request.user, AnonymousUser):
+			
+			requested_user = User.objects.get(username=username)
+			is_it_prof = is_prof(request, requested_user)
+			perfil = None
+			
+			if is_it_prof:
+				perfil = Professor.objects.get(user=requested_user)
+			else:
+				perfil = Perfil.objects.get(user=requested_user)			
+			
+			return render(request, 'perfil.html', {'requested_user' : requested_user, 'is_prof' : is_it_prof, 'perfil':perfil})
+		else:
+			return redirect('login')
+	
+	def post_avatar(self, request, requested_user):
+		img = request.FILES.get('new_avatar', None)
+		user = request.user
+		perfil = None
+		
+		if is_prof(request, user):
+			perfil = Professor.objects.get(user=user)
+		else:
+			perfil = Perfil.objects.get(user=user)
+			
+		perfil.image = img
+		perfil.save()
+			
+		return render(request, 'perfil.html', {'requested_user' : requested_user, 'is_prof' : is_prof(request, requested_user)})
+		
+	def post_edition(self, request, requested_user):
+		first_name = request.POST['first_name']
+		last_name = request.POST['last_name']
+		user = request.user
+		
+		if first_name == '' or last_name == '':
+			pass
+		else:
+			user.first_name = first_name
+			user.last_name = last_name
+			user.save()
 		return render(request, 'perfil.html', {'requested_user' : requested_user, 'is_prof' : is_prof(request, requested_user)})
 	
 	def post(self, request, username):
 		requested_user = User.objects.get(username=username)
-
-		img = request.FILES.get('new_avatar', None)
-		user = request.user
 		
-		perfil = Perfil.objects.get(user=user)
-		perfil.image = img
-		perfil.save()
-		return render(request, 'perfil.html', {'requested_user' : requested_user, 'is_prof' : is_prof(request, requested_user)})
+		if request.POST['post_type'] == 'avatar':
+			return self.post_avatar(request, requested_user)
+		elif request.POST['post_type'] == 'edit':
+			return self.post_edition(request, requested_user)
+		else:
+			return render(request, 'perfil.html', {'requested_user' : requested_user, 'is_prof' : is_prof(request, requested_user)})
 		
 
 def is_prof(request, user):
@@ -75,8 +134,22 @@ def is_prof(request, user):
 		return True
 	except Professor.DoesNotExist:
 		return False
-	
-class FilesUploadView(generic.FormView):
+		
+def get_perfil_logado(request):
+	user = User.objects.get(username=request.user.username, email=request.user.email)
+	#import pdb; pdb.set_trace();
+	if user.is_authenticated():
+		try:
+			perfil = Perfil.objects.get(user=user)
+			print('%s', perfil.user.get_full_name)
+		except:	
+			print('Perfil não encontrado')
+		return perfil
+	else:
+		return None
+
+class FilesUploadView(BaseMixin, generic.FormView):
+
 	template_name = 'upload.html'
 	form_class = FilesForm
 	
@@ -100,7 +173,8 @@ class FilesUploadView(generic.FormView):
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def donate(request):
-	return render(request, 'donate.html')
+	perfil = get_perfil_logado(request)
+	return render(request, 'donate.html', {'perfil':perfil})
 
 #Vote method, método para votação, testando..
 #a implementação provalvelmente precisará do uso de ajax, ou javascript.

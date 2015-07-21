@@ -49,7 +49,8 @@ class Professor(models.Model):
 	name = models.CharField(max_length=50, null=False)
 	reg = models.IntegerField(null=False)
 	user = models.OneToOneField(User, null=False, default=None)
-
+	image = models.ImageField(upload_to='perfil_image/', blank=True, default=static('perfis/images/avatar.png'))
+	
 	@property 
 	def first_name(self):
 		return self.user.first_name

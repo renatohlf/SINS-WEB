@@ -12,7 +12,7 @@
 			</div>
 		</div>
 	</div>
-	</section>
+</section>
 	
 	
 <section id="content">
@@ -67,16 +67,26 @@
 	<!-- EndPaginator-->
 			<div class="col-lg-8">
 				{% for object in file_list %}
-				<section>
-					<div>
-						<div class="box-gray">
-							<h3><a href="{{ object.docfile.url }}"> {{ object.name }} </a></h3>
-							<p>{{ object.desc }} </p>
-							
+				<section class="content">
+					<div class="card-4">
+						
+						<div>
+
+							<div class="box-gray">
+								
+									<h3><a href="{{ object.docfile.url }}"> {{ object.name }} </a></h3>
+									<p>{{ object.desc }} </p>
+									
+								
+							</div>
 						</div>
-					</div>
-					<div class="bottom-article">
+						<div class="bottom-article">
 							<ul class="meta-post">
+								<li><i></i></li>
+									
+								<li><a href="{{ vote.like }}"><i class="fa fa-angle-up fa-3x"></i></a></li>
+								<li><i>{{ object.rating }}</i></li>
+								<li><a href=""><i class="fa fa-angle-down fa-3x"></i></a></p></li>
 								<li><i>Professor: {{ object.prof.name }}</li>
 								<li><i class="icon-calendar"></i> {{ object.pub_date }}</li>
 								<li><i class="icon-user"></i> {{ object.user.user }} </li>
@@ -84,7 +94,10 @@
 								<li><i class="icon-comments"></i><a href="#">4 Comments</a></li>
 							</ul>
 						</div>
+						
+					</div>
 				</section>
+				</hr>
 					{% empty %}
 						<h1>Não existem arquivos no banco de dados.</h1>
 					{% endfor %}
