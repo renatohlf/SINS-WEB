@@ -8,7 +8,7 @@ from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import cache_control
 from django.views import generic
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, AnonymousUser
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from django_enumfield import enum
@@ -53,13 +53,24 @@ def index(request):
 
 class ExibirPerfilView(generic.View):
 	
+	@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 	def get(self, request, username):
-		requested_user = User.objects.get(username=username)
-		return render(request, 'perfil.html', {'requested_user' : requested_user, 'is_prof' : is_prof(request, requested_user)})
+		if request.user is not None and not isinstance(request.user, AnonymousUser):
+			
+			requested_user = User.objects.get(username=username)
+			is_it_prof = is_prof(request, requested_user)
+			perfil = None
+			
+			if is_it_prof:
+				perfil = Professor.objects.get(user=requested_user)
+			else:
+				perfil = Perfil.objects.get(user=requested_user)			
+			
+			return render(request, 'perfil.html', {'requested_user' : requested_user, 'is_prof' : is_it_prof, 'perfil':perfil})
+		else:
+			return redirect('login')
 	
-	def post(self, request, username):
-		requested_user = User.objects.get(username=username)
-
+	def post_avatar(self, request, requested_user):
 		img = request.FILES.get('new_avatar', None)
 		user = request.user
 		
@@ -67,6 +78,29 @@ class ExibirPerfilView(generic.View):
 		perfil.image = img
 		perfil.save()
 		return render(request, 'perfil.html', {'requested_user' : requested_user, 'is_prof' : is_prof(request, requested_user)})
+		
+	def post_edition(self, request, requested_user):
+		first_name = request.POST['first_name']
+		last_name = request.POST['last_name']
+		user = request.user
+		
+		if first_name == '' or last_name == '':
+			pass
+		else:
+			user.first_name = first_name
+			user.last_name = last_name
+			user.save()
+		return render(request, 'perfil.html', {'requested_user' : requested_user, 'is_prof' : is_prof(request, requested_user)})
+	
+	def post(self, request, username):
+		requested_user = User.objects.get(username=username)
+		
+		if request.POST['post_type'] == 'avatar':
+			return self.post_avatar(request, requested_user)
+		elif request.POST['post_type'] == 'edit':
+			return self.post_edition(request, requested_user)
+		else:
+			return render(request, 'perfil.html', {'requested_user' : requested_user, 'is_prof' : is_prof(request, requested_user)})
 		
 
 def is_prof(request, user):

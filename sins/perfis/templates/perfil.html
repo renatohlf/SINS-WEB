@@ -4,16 +4,16 @@
 
 		<div class="container col-lg-4">
 			{% if user.username == requested_user.username %}
-		        <a href="javascript:void(0)" onclick = "document.getElementById('light').style.display='block';document.getElementById('fade').style.display='block'" aria-label="Change your avatar" class=""><img alt="" class="avatar" height="230" src="{% static 'perfis/images/avatar.png' %}" width="230"></a>
+		        <a href="javascript:void(0)" onclick = "document.getElementById('avatar-light').style.display='block';document.getElementById('fade').style.display='block'" aria-label="Change your avatar" class=""><img alt="" class="avatar" height="230" src="{{ perfil.image.url }}" width="230"></a>
 			{% else %}
-				<img alt="" class="avatar" height="230" src="{% static 'perfis/images/avatar.png' %}" width="230">
+				<img alt="" class="avatar" height="230" src="{{ perfil.image.url }}" width="230">
 			{% endif %}
 				
 	      	<h1 class="vcard-names">
 	  			<span class="vcard-fullname" itemprop="name"> {{requested_user.get_full_name}}</span></br>
 	  			
 			</h1>
-			<p class="lead"><span class="vcard-username" itemprop="additionalName"> {{requested_user.username}}</span></p>
+			<p class="lead"><span class="vcard-username" itemprop="additionalName"> {{ requested_user.username }}</span> - {{ perfil.get_curso_display }}</p>
 	
 		<ul class="unstyled divider">
 	    	<li class="vcard-detail"><span class=""></span><a class="email" href="">{{ requested_user.email }}</a></li>
@@ -42,7 +42,7 @@
 			<ul class="nav nav-tabs">
 				{% if user.username == requested_user.username %}
 					<div style="float: right;">
-		                <a href="/account" class="btn btn-theme">
+		                <a href="javascript:void(0)" onclick = "document.getElementById('edit-light').style.display='block';document.getElementById('fade').style.display='block'" class="btn btn-theme">
 		                	Edit profile
 		                </a>
 		         	</div>
@@ -75,13 +75,28 @@
 		</div>
 		
 		{% if user.username == requested_user.username %}
-			<div id="light" class="white_content">
-				<a href = "javascript:void(0)" onclick = "document.getElementById('light').style.display='none';document.getElementById('fade').style.display='none'" class='close'>X</a>
+			<div id="avatar-light" class="white_content">
+				<a href = "javascript:void(0)" onclick = "document.getElementById('avatar-light').style.display='none';document.getElementById('fade').style.display='none'" class='close'>X</a>
 				<h2>Mude seu avatar!</h2>
 				<form action="{% url 'exibir_perfil' requested_user.username %}" method="post" enctype="multipart/form-data">
 					{% csrf_token %}
+					<input name='post_type' style='display:none;' value='avatar'>
 				    <input type="file" name="new_avatar">
 					<input type="submit" class='btn btn-info btn-lg btn-block' id='avatar-submit' value='Enviar'>
+				</form>
+			</div>
+			
+			<div id="edit-light" class="white_content">
+				<a href = "javascript:void(0)" onclick = "document.getElementById('edit-light').style.display='none';document.getElementById('fade').style.display='none'" class='close'>X</a>
+				<h2>Edição de perfil</h2>
+				<form action="{% url 'exibir_perfil' requested_user.username %}" method="post" enctype="multipart/form-data">
+					{% csrf_token %}
+					<input name='post_type' style='display:none;' value='edit'>
+				    <p>Primeiro Nome</p>
+					<input type="text" class='form-control' name="first_name" value={{user.first_name}} autofocus>
+					<p>Último Nome</p>
+					<input type="text" class='form-control' name="last_name" value={{user.last_name}}>
+					<input type="submit" class='btn btn-info btn-lg btn-block' id='edit-submit' value='Enviar'>
 				</form>
 			</div>
 	    	<div id="fade" class="black_overlay"></div>
