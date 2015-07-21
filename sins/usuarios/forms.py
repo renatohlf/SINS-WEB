@@ -8,6 +8,7 @@ class CadastrarUsuarioForm(forms.Form):
 	first_name = forms.CharField(max_length=30, required=True)
 	last_name = forms.CharField(max_length=30, required=True)
 	course = forms.TypedChoiceField(choices=Curso.choices(), coerce=int)
+	image = forms.ImageField(label='Selecione uma imagem.',required=False)
 	username = forms.CharField(max_length=30, required=True)
 	email = forms.EmailField(required=True)
 	password = forms.CharField(required=True)

@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django_enumfield import enum
+from django.templatetags.static import static
 # Create your models here.
 
 
@@ -70,7 +71,8 @@ class Professor(models.Model):
 
 class Perfil(models.Model):
 	user = models.OneToOneField(User)
-	#curso = enum.EnumField(Curso, default=Curso.NONE)
+	curso = enum.EnumField(Curso, default=Curso.NONE)
+	image = models.ImageField(upload_to='perfil_image/', blank=True, default=static('perfis/images/avatar.png'))
 	
 	@property 
 	def full_name(self):
