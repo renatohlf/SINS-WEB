@@ -26,7 +26,7 @@ class CadastrarUsuarioView(View):
 	def post(self, request):
 		#Passa os dados para o form e verifica a validade dos dados pelo método is_valid()
 		form = CadastrarUsuarioForm(request.POST)
-		import pdb; pdb.set_trace();
+		#import pdb; pdb.set_trace();
 		if form.is_valid():
 			
 			#Cria um novo usuário com os dados obtidos e persiste
