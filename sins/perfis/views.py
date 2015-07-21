@@ -69,8 +69,10 @@ class InfoView(BaseMixin,generic.ListView):
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def index(request):
 	return render(request, 'index.html')
-	
-class ExibirPerfilView(generic.View):
+
+
+
+class ExibirPerfilView(BaseMixin ,generic.View):
 	
 	def default_return(self, request, requested_user):
 		is_it_prof = is_prof(request, requested_user)
@@ -112,6 +114,7 @@ class ExibirPerfilView(generic.View):
 			
 		return self.default_return(request, requested_user)
 		
+
 	def post_edition(self, request, requested_user):
 		first_name = request.POST['first_name']
 		last_name = request.POST['last_name']
@@ -143,7 +146,7 @@ def is_prof(request, user):
 		return True
 	except Professor.DoesNotExist:
 		return False
-		
+	
 def get_perfil_logado(request):
 	user = User.objects.get(username=request.user.username, email=request.user.email)
 	#import pdb; pdb.set_trace();
@@ -160,7 +163,7 @@ def get_perfil_logado(request):
 		return perfil
 	else:
 		return None
-
+		
 class FilesUploadView(BaseMixin, generic.FormView):
 
 	template_name = 'upload.html'

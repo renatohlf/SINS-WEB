@@ -9,6 +9,8 @@ class Migration(migrations.Migration):
     dependencies = [
         ('perfis', '0014_perfil_image'),
         ('perfis', '0013_auto_20150720_1728'),
+
+
     ]
 
     operations = [
