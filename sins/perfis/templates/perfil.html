@@ -2,80 +2,99 @@
 {% load static %}
 {% block body %}
 
-	
-	<div class="container col-lg-4">
-        <a href="" aria-label="Change your avatar" class=""><img alt="" class="avatar" height="230" src="{{ perfil.image.url }}" width="230"></a>
-
-      	<h1 class="vcard-names">
-  			<span class="vcard-fullname" itemprop="name"> {{ user.get_full_name }}</span></br>
-  			
-		</h1>
-		<p class="lead"><span class="vcard-username" itemprop="additionalName"> {{ user.username }}</span> - {{ perfil.get_curso_display}}</p>
-
-
-	<ul class="unstyled divider">
-    	<li class="vcard-detail"><span class=""></span><a class="email" href="">{{ user.email }}</a></li>
-  		<li class="vcard-detail"><span class=""></span><span>Joined on </span><time class="join-date" datetime="2014-03-26T11:56:04Z" day="numeric" is="local-time" month="short" year="numeric" title="26 de mar de 2014 08:56 BRT">26 Mar 2014</time></li>
-	</ul>
-
-
-      <div class="">
-        <a href="#">
-          <strong>2</strong>
-          <span>Followers</span>
-        </a>
-        <a href="#">
-          <strong>2</strong>
-          <span>Starred</span>
-        </a>
-        <a href="#">
-          <strong>4</strong>
-          <span>Following</span>
-        </a>
-      </div>
-
-    </div>
-	
-	
-	
-	
-	
-	
-	
-	
-	<div class="col-lg-6 container">
-		
-		<ul class="nav nav-tabs">
-			<li class="active"><a href="#one" data-toggle="tab"><i class="icon-briefcase"></i> Contruibutions</a></li>
-			<li class=""><a href="#two" data-toggle="tab">Downloads</a></li>
-			<li class=""><a href="#three" data-toggle="tab">Comments</a></li>
-			<!-- div btn Editar-->
-			<div style="float: right;">
-            	<a href="#" class="btn btn-theme">
-                	 Edit profile
-                	</a>
-         	</div>
-		</ul>
-		
-	<div class="tab-content">
-		<div class="tab-pane active" id="one">
+	<div class='container'>
+		<div class="container col-lg-4">
+			{% if user.username == requested_user.username %}
+		        <a href="javascript:void(0)" onclick = "document.getElementById('avatar-light').style.display='block';document.getElementById('fade').style.display='block'" aria-label="Change your avatar" class=""><img alt="" class="avatar" height="230" src="{{ perfil.image.url }}" width="230"></a>
+			{% else %}
+				<img alt="" class="avatar" height="230" src="{{ perfil.image.url }}" width="230">
+			{% endif %}
+				
+	      	<h1 class="vcard-names">
+	  			<span class="vcard-fullname" itemprop="name"> {{requested_user.get_full_name}}</span></br>	
+			</h1>
+			<p class="lead"><span class="vcard-username" itemprop="additionalName"> {{ requested_user.username }}</span> - {{ perfil.get_curso_display }}</p>
 			
-				{% lorem 2 p%}
+			<ul class="unstyled divider">
+		    	<li class="vcard-detail"><span class=""></span><a class="email" href="">{{ requested_user.email }}</a></li>
+		  		<li class="vcard-detail"><span class=""></span><span>Joined on </span><time class="join-date" datetime="2014-03-26T11:56:04Z" day="numeric" is="local-time" month="short" year="numeric" title="26 de mar de 2014 08:56 BRT">26 Mar 2014</time></li>
+			</ul>
+
+	      	<div class="">
+	        	<a href="#">
+	          		<strong>2</strong>
+	          		<span>Followers</span>
+	       		 </a>
+		        <a href="#">
+		          	<strong>2</strong>
+		          	<span>Starred</span>
+		        </a>
+		        <a href="#">
+			        <strong>4</strong>
+			        <span>Following</span>
+		        </a>
+	      	</div>
+	    </div>
+		<div class="col-lg-6 container">
 			
+			<ul class="nav nav-tabs">
+				<li class="active"><a href="#one" data-toggle="tab"><i class="icon-briefcase"></i> Contruibutions</a></li>
+				<li class=""><a href="#two" data-toggle="tab">Downloads</a></li>
+				<li class=""><a href="#three" data-toggle="tab">Comments</a></li>
+				
+				{% if user.username == requested_user.username %}
+				<div style="float: right;">
+	            	<a href="javascript:void(0)" onclick = "document.getElementById('edit-light').style.display='block';document.getElementById('fade').style.display='block'" class="btn btn-theme">
+	                	 Edit profile
+	                </a>
+	         	</div>
+				{% endif %}
+			</ul>
 			
-		</div>
-		<div class="tab-pane" id="two">
-			<p>
-				 {% lorem %}
-			</p>
-		</div>
-		<div class="tab-pane" id="three">
-			<p>
-				 {% lorem %}
-			</p>
+			<div class="tab-content">
+				<div class="tab-pane active" id="one">
+						{% lorem 2 p%}		
+				</div>
+				<div class="tab-pane" id="two">
+					<p>
+						 {% lorem %}
+					</p>
+				</div>
+				<div class="tab-pane" id="three">
+					<p>
+						 {% lorem %}
+					</p>
+				</div>
+			</div>
 		</div>
 	</div>
-	
-	</div>
-	
+			
+			
+	{% if user.username == requested_user.username %}
+		<div id="avatar-light" class="white_content">
+			<a href = "javascript:void(0)" onclick = "document.getElementById('avatar-light').style.display='none';document.getElementById('fade').style.display='none'" class='close'>X</a>
+			<h2>Mude seu avatar!</h2>
+			<form action="{% url 'exibir_perfil' requested_user.username %}" method="post" enctype="multipart/form-data">
+				{% csrf_token %}
+				<input name='post_type' style='display:none;' value='avatar'>
+				<input type="file" name="new_avatar">
+				<input type="submit" class='btn btn-info btn-lg btn-block' id='avatar-submit' value='Enviar'>
+			</form>
+		</div>
+				
+		<div id="edit-light" class="white_content">
+			<a href = "javascript:void(0)" onclick = "document.getElementById('edit-light').style.display='none';document.getElementById('fade').style.display='none'" class='close'>X</a>
+			<h2>Edição de perfil</h2>
+			<form action="{% url 'exibir_perfil' requested_user.username %}" method="post" enctype="multipart/form-data">
+				{% csrf_token %}
+				<input name='post_type' style='display:none;' value='edit'>
+				<p>Primeiro Nome</p>
+				<input type="text" class='form-control' name="first_name" value={{user.first_name}} autofocus>
+				<p>Último Nome</p>
+				<input type="text" class='form-control' name="last_name" value={{user.last_name}}>
+				<input type="submit" class='btn btn-info btn-lg btn-block' id='edit-submit' value='Enviar'>
+			</form>
+		</div>
+		<div id="fade" class="black_overlay"></div>
+	{% endif %}
 {% endblock body %}
