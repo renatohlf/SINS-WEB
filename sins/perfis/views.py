@@ -44,12 +44,22 @@ class InfoView(generic.ListView):
 def index(request):
 	return render(request, 'index.html')
 
-@cache_control(no_cache=True, must_revalidate=True, no_store=True)
-@login_required
-def exibir_perfil(request, username):
-	requested_user = User.objects.get(username=username)
+#@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+#@login_required
+#def exibir_perfil(request, username):
+#	requested_user = User.objects.get(username=username)
+#	
+#	return render(request, 'perfil.html', {'requested_user' : requested_user, 'is_prof' : is_prof(request, requested_user)})
+
+class ExibirPerfilView(views.View):
 	
-	return render(request, 'perfil.html', {'requested_user' : requested_user, 'is_prof' : is_prof(request, requested_user)})
+	def get(self, request, username):
+		requested_user = User.objects.get(username=username)
+		return render(request, 'perfil.html', {'requested_user' : requested_user, 'is_prof' : is_prof(request, requested_user)})
+	
+	def post(self, request):
+		if request.POST['new_avatar'] is not None:
+			pass
 
 def is_prof(request, user):
 	try:
