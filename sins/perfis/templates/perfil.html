@@ -38,6 +38,26 @@
 	    </div>
 		<div class="col-lg-6 container">
 			
+			{% if user.username == requested_user.username and is_prof %}
+				<input style="width:100%;" type='text' id='pub-field' placeholder="Publique alguma informação" value=''>
+				<button class='btn btn-theme btn-lg btn-block' id='pub-btn'>Publicar</button>
+				<hr />
+				
+				<script>
+					botao = document.getElementById('pub-btn');
+					botao.addEventListener('click', function() {
+						pub_field = document.getElementById('pub-field');
+						pub = pub_field.value;
+						pub_field.value = '';
+						
+						if(pub.length > 0) {
+							//Fazer o ajax postar a publicação e armazenar no prof
+						}
+					});
+				</script>
+				
+			{% endif %}
+			
 			<ul class="nav nav-tabs">
 				<li class="active"><a href="#one" data-toggle="tab"><i class="icon-briefcase"></i> Contruibutions</a></li>
 				<li class=""><a href="#two" data-toggle="tab">Downloads</a></li>
