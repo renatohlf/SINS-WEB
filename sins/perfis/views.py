@@ -88,9 +88,12 @@ class ExibirPerfilView(BaseMixin ,generic.View):
 			is_it_prof = is_prof(request, requested_user)
 			perfil = None
 			
-			if is_it_prof:
+			if requested_user.is_superuser:
+				perfil = Perfil(user=requested_user)
+			elif is_it_prof:
 				perfil = Professor.objects.get(user=requested_user)
 			else:
+
 				perfil = Perfil.objects.get(user=requested_user)			
 			
 			return render(request, 'perfil.html', {'requested_user' : requested_user, 'is_prof' : is_it_prof, 'perfil':perfil})
