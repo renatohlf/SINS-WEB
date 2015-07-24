@@ -69,7 +69,7 @@ class ExibirPerfilView(BaseMixin ,generic.View):
 			except Perfil.DoesNotExist:
 				perfil = Perfil(user=requested_user)
 				perfil.save()
-		if is_it_prof:
+		elif is_it_prof:
 			perfil = Professor.objects.get(user=requested_user)
 		else:
 			try:
