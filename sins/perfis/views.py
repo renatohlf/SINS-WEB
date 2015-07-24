@@ -62,7 +62,13 @@ class ExibirPerfilView(BaseMixin ,generic.View):
 		is_it_prof = is_prof(request, requested_user)
 		logged_is_prof = is_prof(request, request.user)
 		perfil = None
-			
+		
+		if requested_user.is_superuser:
+			try:
+				perfil = Perfil.objects.get(user=requested_user)
+			except Perfil.DoesNotExist:
+				perfil = Perfil(user=requested_user)
+				perfil.save()
 		if is_it_prof:
 			perfil = Professor.objects.get(user=requested_user)
 		else:
