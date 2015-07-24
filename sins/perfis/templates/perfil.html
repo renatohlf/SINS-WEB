@@ -55,7 +55,15 @@
 						}
 					});
 				</script>
-				
+			
+			{% elif user.username == requested_user.username and is_prof == False %}
+				<form action="{% url 'exibir_perfil' requested_user.username %}" method='post'>
+					{% csrf_token %}
+					<input name='post_type' style='display:none;' value='search'>
+					<input style="width:100%;" type='text' name='search-field' placeholder="Buscar um professor" value=''>
+					<button type='submit' class='btn btn-theme btn-lg btn-block' name='search-btn'>Buscar</button>
+					<hr />
+				</form>
 			{% endif %}
 			
 			<ul class="nav nav-tabs">

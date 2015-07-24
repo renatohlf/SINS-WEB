@@ -76,10 +76,9 @@ class ExibirPerfilView(BaseMixin ,generic.View):
 				perfil = Perfil.objects.get(user=requested_user)
 			except Perfil.DoesNotExist:
 				pass
-								
-		return render(request, 'perfil.html', {'requested_user' : requested_user, 'is_prof' : is_it_prof, 'logged_is_prof' : logged_is_prof, 'perfil':perfil, 'perfil_logado': get_perfil_logado(request)})
 		
-	
+		return render(request, 'perfil.html', {'requested_user' : requested_user, 'is_prof' : is_it_prof, 'logged_is_prof' : logged_is_prof, 'perfil':perfil, 'perfil_logado': get_perfil_logado(request)})
+			
 	@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 	def get(self, request, username):
 		if request.user is not None and not isinstance(request.user, AnonymousUser):
@@ -118,6 +117,29 @@ class ExibirPerfilView(BaseMixin ,generic.View):
 			user.save()
 		
 		return self.default_return(request, requested_user)
+		
+	def post_search(self, request, requested_user):
+		query = request.POST['search-field'].lower()
+		all_profs = Professor.objects.all()
+		list_all = []
+		
+		for each_one in all_profs:
+			full_name = each_one.user.get_full_name().lower()
+			if full_name in query:
+				list_all.append(each_one)
+				continue
+			if query in full_name:
+				list_all.append(each_one)
+				continue
+			if each_one.username.lower() in query:
+				list_all.append(each_one)
+				continue
+			if each_one.email in query:
+				list_all.append(each_one)
+				continue
+			#fazer o if das tags
+		
+		return render(request, 'search.html', {'perfil': get_perfil_logado(request), 'lista': list_all})
 	
 	def post(self, request, username):
 		requested_user = User.objects.get(username=username)
@@ -126,6 +148,8 @@ class ExibirPerfilView(BaseMixin ,generic.View):
 			return self.post_avatar(request, requested_user)
 		elif request.POST['post_type'] == 'edit':
 			return self.post_edition(request, requested_user)
+		elif request.POST['post_type'] == 'search':
+			return self.post_search(request, requested_user)
 		else:
 			return self.default_return(request, requested_user)
 		
@@ -147,7 +171,7 @@ def get_perfil_logado(request):
 				perfil = Professor.objects.get(user=user)
 			else:
 				perfil = Perfil.objects.get(user=user)
-			print('%s', perfil.user.get_full_name)
+			print('%s', perfil.user.get_full_name())
 		except:	
 			print('Perfil não encontrado')
 		return perfil
