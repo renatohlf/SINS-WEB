@@ -11,6 +11,9 @@ from django.views import generic
 from django.contrib.auth.models import User, AnonymousUser
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
+from reportlab.pdfgen import canvas
+from django.http import HttpResponse
+
 from django_enumfield import enum
 from usuarios.forms import FilesForm
 from .models import Files, Professor, Perfil, Painel, Cadeira
@@ -36,6 +39,18 @@ class FilesView(BaseMixin, generic.ListView):
 	 
 	def get_queryset(self):
 		return Files.objects.order_by('-pub_date')
+
+def download_view(request):
+		
+	# Create the HttpResponse object with the appropriate PDF headers.
+	#import pdb; pdb.set_trace();
+	filename = request.GET.get('nome_arq').split('/')[-1]
+	obj = Files.objects.filter(name=filename)
+	response = HttpResponse(obj[0].docfile, content_type='application/pdf')
+	response['Content-Disposition'] = 'attachment; filename=%s' % obj[0].docfile.url.split('/')[-1]
+		
+	return response
+
 
 #Página de informações
 class InfoView(BaseMixin,generic.ListView):
