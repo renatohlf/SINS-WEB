@@ -38,17 +38,51 @@
 	    </div>
 		<div class="col-lg-6 container">
 			
+			{% if user.username == requested_user.username and is_prof %}
+				<input style="width:100%;" type='text' id='pub-field' placeholder="Publique alguma informação" value=''>
+				<button class='btn btn-theme btn-lg btn-block' id='pub-btn'>Publicar</button>
+				<hr />
+				
+				<script>
+					botao = document.getElementById('pub-btn');
+					botao.addEventListener('click', function() {
+						pub_field = document.getElementById('pub-field');
+						pub = pub_field.value;
+						pub_field.value = '';
+						
+						if(pub.length > 0) {
+							//Fazer o ajax postar a publicação e armazenar no prof
+						}
+					});
+				</script>
+			
+			{% elif user.username == requested_user.username and is_prof == False %}
+				<form action="{% url 'exibir_perfil' requested_user.username %}" method='post'>
+					{% csrf_token %}
+					<input name='post_type' style='display:none;' value='search'>
+					<input style="width:100%;" type='text' name='search-field' placeholder="Buscar um professor" value=''>
+					<button type='submit' class='btn btn-theme btn-lg btn-block' name='search-btn'>Buscar</button>
+					<hr />
+				</form>
+			{% endif %}
+			
 			<ul class="nav nav-tabs">
 				<li class="active"><a href="#one" data-toggle="tab"><i class="icon-briefcase"></i> Contruibutions</a></li>
 				<li class=""><a href="#two" data-toggle="tab">Downloads</a></li>
 				<li class=""><a href="#three" data-toggle="tab">Comments</a></li>
 				
 				{% if user.username == requested_user.username %}
-				<div style="float: right;">
-	            	<a href="javascript:void(0)" onclick = "document.getElementById('edit-light').style.display='block';document.getElementById('fade').style.display='block'" class="btn btn-theme">
-	                	 Edit profile
-	                </a>
-	         	</div>
+					<div style="float: right;">
+		            	<a href="javascript:void(0)" onclick = "document.getElementById('edit-light').style.display='block';document.getElementById('fade').style.display='block'" class="btn btn-theme">
+		                	 Edit profile
+		                </a>
+		         	</div>
+				{% elif is_prof == True and logged_is_prof == False %}
+					<div style="float: right;">
+		            	<a href="" class="btn btn-theme">
+		              		Seguir
+		                </a>
+		         	</div>
 				{% endif %}
 			</ul>
 			
