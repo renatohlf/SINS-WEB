@@ -14,12 +14,14 @@ class Curso(enum.Enum):
 	ELETRO = 5
 	MECAN = 6
 	MECAT = 7
+	ARTIGO = 40
 	
 	labels = {
 		NONE: 'vazio',
 		ECOMP: 'ECOMP',
 		CIV: 'Civil',
 		TELECOM: 'Telecomunicações',
+		ARTIGO: 'Artigos'
 		#...
 	}
 	
@@ -35,6 +37,7 @@ class Cadeira(enum.Enum):
 	LPI = 9
 	LPO = 10
 	ED = 11
+	ARTIGO = 40
 	#...
 	labels = {
         NONE: 'vazio',
@@ -43,7 +46,8 @@ class Cadeira(enum.Enum):
 		CALC3: 'Calculo 3',
 		#...
     }
-	
+
+#class Artigo(models.Model):
 
 class Professor(models.Model):
 	name = models.CharField(max_length=50, null=False)
