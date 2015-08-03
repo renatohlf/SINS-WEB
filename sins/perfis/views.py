@@ -112,6 +112,8 @@ class ExibirPerfilView(BaseMixin ,generic.View):
 		if request.user is not None and not isinstance(request.user, AnonymousUser):
 			requested_user = User.objects.get(username=username)
 			
+			is_it_prof = is_prof(request, requested_user)
+			
 			if requested_user.is_superuser:
 				try:
 					perfil = Perfil.objects.get(user=requested_user)
