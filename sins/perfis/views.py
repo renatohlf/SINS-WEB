@@ -52,6 +52,7 @@ class FilesView(BaseMixin, generic.ListView):
 	 
 	def get_queryset(self):
 		return Files.objects.order_by('-pub_date')
+		
 
 def download_view(request):
 		
