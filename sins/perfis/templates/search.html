@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block body %}
+
+	<div class='container'>
+		<h1>Resultado da busca</h1>
+		<div style="float: right;">
+			<a href="{% url 'exibir_perfil'  user.username %}" class="btn btn-theme">
+		    	Voltar para perfil
+		    </a>
+		</div>
+		{% if lista %}
+			<ul>
+				{% for prof in lista %}
+					<li><a href="{% url 'exibir_perfil' prof.user.username %}">{{ prof.user.get_full_name }}</a></li>
+				{% endfor %}
+			</ul>
+		{% else %}
+			<p>Não encontramos resultados para sua busca</p>
+		{% endif %}
+		
+	</div>
+
+{% endblock %}

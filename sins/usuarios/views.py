@@ -27,6 +27,8 @@ class CadastrarUsuarioView(View):
 		form = CadastrarUsuarioForm(request.POST)
 		#import pdb; pdb.set_trace();
 		if form.is_valid():
+			#pega a imagem que o usuário escolheu no form
+			img = request.FILES.get('image',None)
 			
 			#Cria um novo usuário com os dados obtidos e persiste
 			new_user = User.objects.create_user(form.data['username'], form.data['email'], form.data['password'])
@@ -35,8 +37,6 @@ class CadastrarUsuarioView(View):
 			new_user.save()
 			#seta o campo curso escolhido pelo usuario no form
 			course = form.data['course']
-			#pega a imagem que o usuário escolheu no form
-			img = request.FILES.get('image',None)
 			
 			
 			#Cria a variavel perfil para uso posterior
