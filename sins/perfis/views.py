@@ -133,16 +133,17 @@ class ExibirPerfilView(BaseMixin ,generic.View):
 	
 	def post_avatar(self, request, requested_user):
 		img = request.FILES.get('new_avatar', None)
-		user = request.user
-		perfil = None
-		
-		if is_prof(request, user):
-			perfil = Professor.objects.get(user=user)
-		else:
-			perfil = Perfil.objects.get(user=user)
+		if img is not None:
+			user = request.user
+			perfil = None
 			
-		perfil.image = img
-		perfil.save()
+			if is_prof(request, user):
+				perfil = Professor.objects.get(user=user)
+			else:
+				perfil = Perfil.objects.get(user=user)
+				
+			perfil.image = img
+			perfil.save()
 			
 		return self.default_return(request, requested_user)
 
