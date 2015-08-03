@@ -138,7 +138,7 @@ class Painel(models.Model):
 		return self.title
 	
 class Questions(models.Model):
-	title = models.CharField()
-	desc = models.CharField()
+	title = models.CharField(max_length=50)
+	desc = models.CharField(max_length=50)
 	rating = models.IntegerField(default=0)
 	
