@@ -13,7 +13,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from django_enumfield import enum
 from usuarios.forms import FilesForm
-from .models import Files, Professor, Perfil, Painel, Cadeira
+from .models import Files, Professor, Perfil, Painel, Cadeira, Questions
 
 
 class BaseMixin(object):
@@ -193,4 +193,7 @@ def vote(request, files_id):
 		
 	options = { 0 : like, 1 : unlike, }
 	#options[0]() defina qual o numero no colchetes, e será a escolha do voto.
-		   
+	
+class StackQuestions(generic.View):
+	Model = Questions
+	template_name = 'Stackquestions'

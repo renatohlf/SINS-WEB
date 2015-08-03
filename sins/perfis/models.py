@@ -133,5 +133,8 @@ class Painel(models.Model):
 	def __str__(self):
 		return self.title
 	
-	
+class Questions(models.Model):
+	title = models.CharField()
+	desc = models.CharField()
+	rating = models.IntegerField(default=0)
 	
