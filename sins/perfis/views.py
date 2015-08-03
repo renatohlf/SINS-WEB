@@ -40,6 +40,17 @@ def get_perfil_logado(request):
 	else:
 		return None
 
+class ArtigosView(BaseMixin, generic.ListView):
+	model = Files
+	template_name = 'artigos.html'
+	context_object_name = 'file_list'
+	queryset = Files.objects.all()
+	paginate_by=5 
+	
+	 
+	def get_queryset(self):
+		return Files.objects.order_by('-pub_date')
+
 
 
 class FilesView(BaseMixin, generic.ListView):
@@ -89,7 +100,11 @@ class ExibirPerfilView(BaseMixin ,generic.View):
 			perfil = None
 			
 			if requested_user.is_superuser:
-				perfil = Perfil(user=requested_user)
+				try:
+					perfil = Perfil.objects.get(user=requested_user)
+				except Perfil.DoesNotExist:
+					perfil = Perfil(user=requested_user)
+					perfil.save()
 			elif is_it_prof:
 				perfil = Professor.objects.get(user=requested_user)
 			else:
