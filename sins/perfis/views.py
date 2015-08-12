@@ -52,6 +52,15 @@ class FilesView(BaseMixin, generic.ListView):
 	 
 	def get_queryset(self):
 		return Files.objects.order_by('-pub_date')
+	
+	# import pdb; pdb.set_trace();
+	
+	# def get(self, request):
+	# 	filename = request.GET.get('nome_arq')
+	# 	obj = Files.objects.filter(name=filename)
+	# 	response = HttpResponse(obj)
+				
+	# 	return response
 		
 
 def download_view(request):
