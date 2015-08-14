@@ -55,6 +55,15 @@ class Professor(models.Model):
 	user = models.OneToOneField(User, null=False, default=None)
 	image = models.ImageField(upload_to='perfil_image/', blank=True, default=static('perfis/images/avatar.png'))
 	
+	def add_info(self, info):
+		new_info = Info(content = info, prof = self)
+		new_info.save()
+		print('info add')
+		
+	def get_info(self):
+		infos = Info.objects.filter(prof=self)
+		return infos
+	
 	@property 
 	def first_name(self):
 		return self.user.first_name
@@ -101,6 +110,11 @@ class Perfil(models.Model):
 		
 	def __str__(self):
 		return self.user.username
+
+class Info(models.Model):
+	content = models.CharField(max_length=140,null=False)
+	prof = models.ForeignKey(Professor)
+
 
 class Files(models.Model):
 	#nome do professor responsavel pelo arquivo. ou arquivo nomeado com nome deste professor

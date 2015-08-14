@@ -192,6 +192,13 @@ class ExibirPerfilView(BaseMixin ,generic.View):
 			#fazer o if das tags
 		
 		return render(request, 'search.html', {'perfil': get_perfil_logado(request), 'lista': list_all})
+		
+	def post_pub(self, request, requested_user):
+		pub = request.POST['pub-field']
+		prof = Professor.objects.get(user=request.user)
+		prof.add_info(pub)
+		
+		return self.default_return(request, requested_user)
 	
 	def post(self, request, username):
 		requested_user = User.objects.get(username=username)
@@ -202,8 +209,9 @@ class ExibirPerfilView(BaseMixin ,generic.View):
 			return self.post_edition(request, requested_user)
 		elif request.POST['post_type'] == 'search':
 			return self.post_search(request, requested_user)
+		elif request.POST['post_type'] == 'pub':
+			return self.post_pub(request, requested_user)
 		else:
-
 			return self.default_return(request, requested_user)
 		
 

@@ -39,22 +39,13 @@
 		<div class="col-lg-6 container">
 			
 			{% if user.username == requested_user.username and is_prof %}
-				<input style="width:100%;" type='text' id='pub-field' placeholder="Publique alguma informação" value=''>
-				<button class='btn btn-theme btn-lg btn-block' id='pub-btn'>Publicar</button>
+				<form action="{% url 'exibir_perfil' user.username %}" method='post'>
+					{% csrf_token %}
+					<input name='post_type' style='display:none;' value='pub'>
+					<input style="width:100%;" type='text' name='pub-field' placeholder="Publique alguma informação" value=''>
+					<button type='submit' class='btn btn-theme btn-lg btn-block' id='pub-btn'>Publicar</button>
+				</form>
 				<hr />
-				
-				<script>
-					botao = document.getElementById('pub-btn');
-					botao.addEventListener('click', function() {
-						pub_field = document.getElementById('pub-field');
-						pub = pub_field.value;
-						pub_field.value = '';
-						
-						if(pub.length > 0) {
-							//Fazer o ajax postar a publicação e armazenar no prof
-						}
-					});
-				</script>
 			
 			{% elif user.username == requested_user.username and is_prof == False %}
 				<form action="{% url 'exibir_perfil' requested_user.username %}" method='post'>
