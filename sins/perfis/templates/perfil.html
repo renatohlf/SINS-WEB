@@ -58,7 +58,12 @@
 			{% endif %}
 			
 			<ul class="nav nav-tabs">
-				<li class="active"><a href="#one" data-toggle="tab"><i class="icon-briefcase"></i> Contruibutions</a></li>
+				{% if is_it_prof %}
+					<li class="active"><a href="#four" data-toggle="tab">Informações</a></li>
+					<li class=""><a href="#one" data-toggle="tab"><i class="icon-briefcase"></i> Contruibutions</a></li>
+				{% else %}
+					<li class="active"><a href="#one" data-toggle="tab"><i class="icon-briefcase"></i> Contruibutions</a></li>
+				{% endif %}
 				<li class=""><a href="#two" data-toggle="tab">Downloads</a></li>
 				<li class=""><a href="#three" data-toggle="tab">Comments</a></li>
 				
@@ -68,19 +73,43 @@
 		                	 Edit profile
 		                </a>
 		         	</div>
+				{% elif is_prof == True and logged_is_prof == False and user in perfil.users_following %}
+					<div style="float: right;">
+						<form action="{% url 'exibir_perfil' requested_user.username %}" method="post"> 
+							{% csrf_token %}
+							<input name='post_type' style='display:none;' value='follow'>
+							<button type='submit' class='btn btn-theme' name='search-btn'>Deixar</button>
+						</form>
+		         	</div>
+				
 				{% elif is_prof == True and logged_is_prof == False %}
 					<div style="float: right;">
-		            	<a href="" class="btn btn-theme">
-		              		Seguir
-		                </a>
+						<form action="{% url 'exibir_perfil' requested_user.username %}" method="post"> 
+							{% csrf_token %}
+							<input name='post_type' style='display:none;' value='follow'>
+							<button type='submit' class='btn btn-theme' name='search-btn'>Acompanhar</button>
+						</form>
 		         	</div>
 				{% endif %}
 			</ul>
 			
 			<div class="tab-content">
-				<div class="tab-pane active" id="one">
-						{% lorem 2 p%}		
-				</div>
+				{% if is_it_prof %}
+					<div class="tab-pane active" id="four">
+						<ul>
+							{% for info in perfil.get_info %}
+								<li>{{ info.content }}</li>
+							{% endfor %}
+						</ul>	
+					</div>
+					<div class="tab-pane" id="one">
+							{% lorem 2 p%}		
+					</div>
+				{% else %}
+					<div class="tab-pane active" id="one">
+							{% lorem 2 p%}		
+					</div>
+				{% endif %}
 				<div class="tab-pane" id="two">
 					<p>
 						 {% lorem %}

@@ -8,10 +8,13 @@
 		<div class="row">
 			<div class="col-lg-12">
 			<!-- Slider -->
-		        <div id="main-slider" class="flexslider">
-		            <ul class="slides">
+				{% if flag %}
+		        	<div id="main-slider" class="flexslider col-lg-6">
+				{% else %}
+					<div id="main-slider" class="flexslider">
+				{% endif %}
+					<ul class="slides">
 					{% for object in painel_list %}
-							
 							
 		              <li>
 		                <img src="{% static 'perfis/images/slides/1.jpg' %}" alt="" />
@@ -28,6 +31,21 @@
 		            </ul>
 		        </div>
 			<!-- end slider -->
+			{% if flag %}
+				<div class='col-lg-1'></div>
+				<div class='col-lg-5'>
+					{% if following_list %}
+						<h3>Professores acompanhados</h3>
+						<p>Veja informações vindas dos seguintes professores que você acompanha</p>
+					{% endif %}
+					{% for prof in following_list %}
+						<li><a href="{% url 'exibir_perfil' prof.user.username %}">Sobre {{ prof.user.get_full_name }}</a></li>
+					{% empty %}
+						<h3>Nenhum professor seguido</h3>
+						<p>Você pode obter informações aqui postadas pelos professores que você seguir.</p>
+					{% endfor %}
+				</div>
+			{% endif%}
 			</div>
 		</div>
 	</div>	

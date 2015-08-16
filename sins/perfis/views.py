@@ -84,14 +84,23 @@ class InfoView(BaseMixin,generic.ListView):
 	#carrega os objetos em uma lista, para ser consumida na página
 	context_object_name = 'painel_list'
 	
-	def get_queryset(self):
-		#retorna a lista por ordem de título. obs:title é um campo da tabela Painel
-		return Painel.objects.order_by('-title')
+	def get(self, request):
+		perfil = get_perfil_logado(request)
+		following_list = []
+		if not isinstance(perfil, Professor):		
+			following_list = perfil.professor_set.all()
+		
+		perfil = get_perfil_from_user(request, request.user)
+		flag = isinstance(perfil, Perfil)
+
+		return render(request, self.template_name, {'flag': flag, 'painel_list': Painel.objects.order_by('-title'), 'following_list': following_list})
+		
+	def post(self, request):
+		pass
 		
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def index(request):
 	return render(request, 'index.html')
-
 
 
 class ExibirPerfilView(BaseMixin ,generic.View):
@@ -107,34 +116,15 @@ class ExibirPerfilView(BaseMixin ,generic.View):
 			except Perfil.DoesNotExist:
 				perfil = Perfil(user=requested_user)
 				perfil.save()
-		elif is_it_prof:
-			perfil = Professor.objects.get(user=requested_user)
 		else:
-			try:
-				perfil = Perfil.objects.get(user=requested_user)
-			except Perfil.DoesNotExist:
-				pass
+			perfil = get_perfil_from_user(request, requested_user)
 		
 		return render(request, 'perfil.html', {'requested_user' : requested_user, 'is_prof' : is_it_prof, 'logged_is_prof' : logged_is_prof, 'perfil':perfil, 'perfil_logado': get_perfil_logado(request)})
 			
 	@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 	def get(self, request, username):
 		if request.user is not None and not isinstance(request.user, AnonymousUser):
-			requested_user = User.objects.get(username=username)
-			
-			is_it_prof = is_prof(request, requested_user)
-			
-			if requested_user.is_superuser:
-				try:
-					perfil = Perfil.objects.get(user=requested_user)
-				except Perfil.DoesNotExist:
-					perfil = Perfil(user=requested_user)
-					perfil.save()
-			elif is_it_prof:
-				perfil = Professor.objects.get(user=requested_user)
-			else:
-
-				perfil = Perfil.objects.get(user=requested_user)			
+			requested_user = User.objects.get(username=username)			
 			
 			return self.default_return(request, requested_user)
 		else:
@@ -143,14 +133,7 @@ class ExibirPerfilView(BaseMixin ,generic.View):
 	def post_avatar(self, request, requested_user):
 		img = request.FILES.get('new_avatar', None)
 		if img is not None:
-			user = request.user
-			perfil = None
-			
-			if is_prof(request, user):
-				perfil = Professor.objects.get(user=user)
-			else:
-				perfil = Perfil.objects.get(user=user)
-				
+			perfil = get_perfil_logado(request)
 			perfil.image = img
 			perfil.save()
 			
@@ -189,7 +172,7 @@ class ExibirPerfilView(BaseMixin ,generic.View):
 			if each_one.email in query:
 				list_all.append(each_one)
 				continue
-			#fazer o if das tags
+			#adicionar outros filtros caso seja necessário
 		
 		return render(request, 'search.html', {'perfil': get_perfil_logado(request), 'lista': list_all})
 		
@@ -199,9 +182,24 @@ class ExibirPerfilView(BaseMixin ,generic.View):
 		prof.add_info(pub)
 		
 		return self.default_return(request, requested_user)
+		
+	def post_follow(self, request, requested_user):
+		perfil = Perfil.objects.get(user = request.user)
+		prof = Professor.objects.get(user = requested_user)
+		followers = prof.followers.all()
+		
+		if perfil in followers:
+			print('remove follower ', request.user.username, ' do prof ', requested_user.username)
+			prof.remove_follower(perfil)
+		else:
+			print('add follower ', request.user.username, ' do prof ', requested_user.username)
+			prof.add_follower(perfil)
+			
+		return self.default_return(request, requested_user)
 	
 	def post(self, request, username):
 		requested_user = User.objects.get(username=username)
+		print('requested username ', username)
 		perfil = get_perfil_logado(request)
 		if request.POST['post_type'] == 'avatar':
 			return self.post_avatar(request, requested_user)
@@ -211,6 +209,8 @@ class ExibirPerfilView(BaseMixin ,generic.View):
 			return self.post_search(request, requested_user)
 		elif request.POST['post_type'] == 'pub':
 			return self.post_pub(request, requested_user)
+		elif request.POST['post_type'] == 'follow':
+			return self.post_follow(request, requested_user)
 		else:
 			return self.default_return(request, requested_user)
 		
@@ -238,6 +238,19 @@ def get_perfil_logado(request):
 		return perfil
 	else:
 		return None
+		
+def get_perfil_from_user(request, user):
+	perfil = None
+	try:
+		perfil = Perfil.objects.get(user=user)
+	except Perfil.DoesNotExist:
+		try:
+			perfil = Professor.objects.get(user=user)
+		except Professor.DoesNotExist:
+			return None
+			
+	return perfil
+		
 		
 class FilesUploadView(BaseMixin, generic.FormView):
 

@@ -49,40 +49,6 @@ class Cadeira(enum.Enum):
 
 #class Artigo(models.Model):
 
-class Professor(models.Model):
-	name = models.CharField(max_length=50, null=False)
-	reg = models.IntegerField(null=False)
-	user = models.OneToOneField(User, null=False, default=None)
-	image = models.ImageField(upload_to='perfil_image/', blank=True, default=static('perfis/images/avatar.png'))
-	
-	def add_info(self, info):
-		new_info = Info(content = info, prof = self)
-		new_info.save()
-		print('info add')
-		
-	def get_info(self):
-		infos = Info.objects.filter(prof=self)
-		return infos
-	
-	@property 
-	def first_name(self):
-		return self.user.first_name
-
-	@property
-	def last_name(self):
-		return self.user.last_name
-
-	@property 
-	def username(self):
-		return self.user.username
-
-	@property 
-	def email(self):
-		return self.user.email
-
-	def __str__(self):
-		return self.name
-
 class Perfil(models.Model):
 	user = models.OneToOneField(User)
 	curso = enum.EnumField(Curso, default=Curso.NONE)
@@ -110,6 +76,69 @@ class Perfil(models.Model):
 		
 	def __str__(self):
 		return self.user.username
+
+class Professor(models.Model):
+	name = models.CharField(max_length=50, null=False)
+	reg = models.IntegerField(null=False)
+	user = models.OneToOneField(User, null=False, default=None)
+	image = models.ImageField(upload_to='perfil_image/', blank=True, default=static('perfis/images/avatar.png'))
+	followers = models.ManyToManyField(Perfil)
+	
+	def add_info(self, info):
+		new_info = Info(content = info, prof = self)
+		new_info.save()
+		print('info add')
+		
+	def get_info(self):
+		infos = Info.objects.filter(prof=self)
+		return infos
+		
+	def add_follower(self, perfil):
+		self.followers.add(perfil)
+		self.save()
+		
+	def remove_follower(self, perfil):
+		self.followers.remove(perfil)
+		self.save()
+		
+	def user_is_follower(self, user):
+		followers = self.followers.all()
+		perfil = None
+		try:
+			perfil = Perfil.objects.get(user=user)
+			if perfil in followers:
+				return True
+			else:
+				return False
+		except Perfil.DoesNotExist :
+			return False
+			
+	def users_following(self):
+		followers = self.followers.all()
+		return_list = []
+		for follower in followers:
+			return_list.append(follower.user)
+		
+		return return_list
+	
+	@property 
+	def first_name(self):
+		return self.user.first_name
+
+	@property
+	def last_name(self):
+		return self.user.last_name
+
+	@property 
+	def username(self):
+		return self.user.username
+
+	@property 
+	def email(self):
+		return self.user.email
+
+	def __str__(self):
+		return self.name
 
 class Info(models.Model):
 	content = models.CharField(max_length=140,null=False)
