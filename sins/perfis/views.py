@@ -173,7 +173,7 @@ class ExibirPerfilView(BaseMixin ,generic.View):
 				continue
 			#adicionar outros filtros caso seja necessário
 		
-		return render(request, 'search.html', {'perfil': get_perfil_logado(request), 'lista': list_all})
+		return render(request, 'search.html', {'lista': list_all})
 		
 	def post_pub(self, request, requested_user):
 		pub = request.POST['pub-field']
