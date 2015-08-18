@@ -90,7 +90,12 @@ class Professor(models.Model):
 		print('info add')
 		
 	def get_info(self):
-		infos = Info.objects.filter(prof=self)
+		search_infos = Info.objects.filter(prof=self)
+		infos = []
+		
+		for info in search_infos:
+			infos.insert(0, info)
+		
 		return infos
 		
 	def add_follower(self, perfil):

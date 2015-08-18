@@ -107,7 +107,6 @@ class ExibirPerfilView(BaseMixin ,generic.View):
 	
 	def default_return(self, request, requested_user):
 		is_it_prof = is_prof(request, requested_user)
-		logged_is_prof = is_prof(request, request.user)
 		perfil = None
 		
 		if requested_user.is_superuser:
@@ -119,7 +118,7 @@ class ExibirPerfilView(BaseMixin ,generic.View):
 		else:
 			perfil = get_perfil_from_user(request, requested_user)
 		
-		return render(request, 'perfil.html', {'requested_user' : requested_user, 'is_prof' : is_it_prof, 'logged_is_prof' : logged_is_prof, 'perfil':perfil, 'perfil_logado': get_perfil_logado(request)})
+		return render(request, 'perfil.html', {'requested_user' : requested_user, 'is_prof' : is_it_prof, 'perfil': perfil})
 			
 	@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 	def get(self, request, username):

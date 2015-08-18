@@ -36,7 +36,7 @@
 		        </a>
 	      	</div>
 	    </div>
-		<div class="col-lg-6 container">
+		<div class="col-lg-7 container">
 			
 			{% if user.username == requested_user.username and is_prof %}
 				<form action="{% url 'exibir_perfil' user.username %}" method='post'>
@@ -58,7 +58,7 @@
 			{% endif %}
 			
 			<ul class="nav nav-tabs">
-				{% if is_it_prof %}
+				{% if is_prof %}
 					<li class="active"><a href="#four" data-toggle="tab">Informações</a></li>
 					<li class=""><a href="#one" data-toggle="tab"><i class="icon-briefcase"></i> Contruibutions</a></li>
 				{% else %}
@@ -94,7 +94,7 @@
 			</ul>
 			
 			<div class="tab-content">
-				{% if is_it_prof %}
+				{% if is_prof %}
 					<div class="tab-pane active" id="four">
 						<ul>
 							{% for info in perfil.get_info %}
