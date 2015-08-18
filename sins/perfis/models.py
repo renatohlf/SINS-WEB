@@ -106,6 +106,10 @@ class Professor(models.Model):
 		self.followers.remove(perfil)
 		self.save()
 		
+	def num_of_followers(self):
+		followers = self.followers.all()
+		return len(followers)
+		
 	def user_is_follower(self, user):
 		followers = self.followers.all()
 		perfil = None

@@ -16,7 +16,7 @@ from django.http import HttpResponse
 
 from django_enumfield import enum
 from usuarios.forms import FilesForm
-from .models import Files, Professor, Perfil, Painel, Cadeira, Questions
+from .models import Files, Professor, Perfil, Painel, Cadeira, Questions, Info
 
 
 class BaseMixin(object):
@@ -195,6 +195,12 @@ class ExibirPerfilView(BaseMixin ,generic.View):
 			prof.add_follower(perfil)
 			
 		return self.default_return(request, requested_user)
+		
+	def delete_info(self, request, requested_user):
+		id_requested = int(request.POST['info-id'])
+		info = Info.objects.get(id=id_requested)
+		info.delete()
+		return self.default_return(request, requested_user)
 	
 	def post(self, request, username):
 		requested_user = User.objects.get(username=username)
@@ -210,6 +216,8 @@ class ExibirPerfilView(BaseMixin ,generic.View):
 			return self.post_pub(request, requested_user)
 		elif request.POST['post_type'] == 'follow':
 			return self.post_follow(request, requested_user)
+		elif request.POST['post_type'] == 'delete':
+			return self.delete_info(request, requested_user)
 		else:
 			return self.default_return(request, requested_user)
 		

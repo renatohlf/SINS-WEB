@@ -21,20 +21,18 @@
 		  		<li class="vcard-detail"><span class=""></span><span>Joined on </span><time class="join-date" datetime="2014-03-26T11:56:04Z" day="numeric" is="local-time" month="short" year="numeric" title="26 de mar de 2014 08:56 BRT">26 Mar 2014</time></li>
 			</ul>
 
-	      	<div class="">
-	        	<a href="#">
-	          		<strong>2</strong>
-	          		<span>Followers</span>
-	       		 </a>
-		        <a href="#">
-		          	<strong>2</strong>
-		          	<span>Starred</span>
-		        </a>
-		        <a href="#">
-			        <strong>4</strong>
-			        <span>Following</span>
-		        </a>
-	      	</div>
+			{% if is_prof %}
+				<div class="">
+					<a href="#">
+						<strong>{{ perfil.num_of_followers }}</strong>
+						{% if perfil.num_of_followers == 1 %}
+							<span>Follower</span>
+						{% else %}
+							<span>Followers</span>
+						{% endif %}
+					</a>
+				</div>
+			{% endif %}
 	    </div>
 		<div class="col-lg-7 container">
 			
@@ -42,7 +40,7 @@
 				<form action="{% url 'exibir_perfil' user.username %}" method='post'>
 					{% csrf_token %}
 					<input name='post_type' style='display:none;' value='pub'>
-					<input style="width:100%;" type='text' name='pub-field' placeholder="Publique alguma informação" value=''>
+					<input maxlength="140" style="width:100%;" type='text' name='pub-field' placeholder="Publique alguma informação" value=''>
 					<button type='submit' class='btn btn-theme btn-lg btn-block' id='pub-btn'>Publicar</button>
 				</form>
 				<hr />
@@ -98,7 +96,12 @@
 					<div class="tab-pane active" id="four">
 						<ul>
 							{% for info in perfil.get_info %}
-								<li>{{ info.content }}</li>
+								<li>
+									{{ info.content }}
+									{% if user.username == requested_user.username %}
+										<a class='close' href = "javascript:void(0)" onclick = "document.getElementById('info-id').value={{ info.id }};document.getElementById('delete-btn').click();">X</a>
+									{% endif %}
+								</li>
 							{% endfor %}
 						</ul>	
 					</div>
@@ -151,6 +154,12 @@
 			</form>
 		</div>
 		<div id="fade" class="black_overlay"></div>
+		<form id='delete-form' action="{% url 'exibir_perfil' requested_user.username %}" method="post"> 
+			{% csrf_token %}
+			<input name='post_type' style='display:none;' value='delete'>
+			<input id='info-id' name='info-id' style='display:none;' type='number' value=''>
+			<button type='submit' class='close' id='delete-btn'>X</button>
+		</form>
 	{% endif %}
 
 {% endblock body %}

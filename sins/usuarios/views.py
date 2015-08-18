@@ -69,6 +69,7 @@ class CadastrarUsuarioView(View):
 		return render(request, self.template_name, {'form': form })
 		
 def logout_view(request):
+	print('logout requested: ', request.user.username)
 	logout(request)
 	return render(request, 'login.html')
 
