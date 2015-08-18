@@ -225,8 +225,8 @@ def get_perfil_logado(request):
 	user = User.objects.get(username=request.user.username, email=request.user.email)
 	#import pdb; pdb.set_trace();
 	if user.is_authenticated():
+		perfil = None
 		try:
-			perfil = None
 			if is_prof(request, user):
 				perfil = Professor.objects.get(user=user)
 			else:

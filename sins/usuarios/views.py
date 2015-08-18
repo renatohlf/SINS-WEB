@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.views.generic.base import View
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from usuarios.forms import CadastrarUsuarioForm
 from perfis.models import Perfil, Professor
 from django.http import HttpResponseRedirect
@@ -68,7 +68,9 @@ class CadastrarUsuarioView(View):
 		#Gera novamente a página de cadastro passando o form contendo os erros
 		return render(request, self.template_name, {'form': form })
 		
-
+def logout_view(request):
+	logout(request)
+	return render(request, 'login.html')
 
 #View responsável pelo login
 class LoginView(View):
